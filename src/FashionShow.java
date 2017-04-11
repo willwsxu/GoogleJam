@@ -170,14 +170,14 @@ public class FashionShow {
             long points = compute();
             if (maxPoints<points) {
                 maxPoints=points;
-                //print();
+                print(grid);
                 copy(gridMax, grid);
                 //out.println(maxPoints);
             }
             return; // done
         }
-        if ( maxPoints==points[N-1])
-            return;
+        //if ( maxPoints==points[N-1])
+        //    return;
         //rc = findNext(rc);
         int r = rc/N;
         int c = rc%N;
@@ -210,7 +210,12 @@ public class FashionShow {
     {
         
     }
-    void copy(char [][]dest, char [][]source)
+    // 
+    void placeRook( char row[])
+    {
+        
+    }
+    static void copy(char [][]dest, char [][]source)
     {
         for (int i=0; i<source.length; i++)
             for(int j=0; j<source.length; j++)
@@ -221,6 +226,11 @@ public class FashionShow {
         grid = new char[N][N];
         gridOri = new char[N][N];
         gridMax = new char[N][N];
+        Rook rk = new Rook(grid);
+        Bishop bp = new Bishop(grid);
+        print(rk.getGrid());
+        print(bp.save);
+        
         for (char[] row: grid)
             Arrays.fill(row, '.');
         for (int i=0; i<M; i++) {
@@ -256,14 +266,13 @@ public class FashionShow {
         //PrintStream console = System.out;
         //System.setOut(console);
         //getMaxPoints();
-        
 
         File file = new File("out.txt");
         FileOutputStream fos = new FileOutputStream(file);
         PrintStream ps = new PrintStream(fos);
         
-        System.setOut(ps);
-        scan = googlejam.CodeChef.getFileScanner("D-small-attempt3.in.txt");
+        //System.setOut(ps);
+        scan = googlejam.CodeChef.getFileScanner("fashionshow-t1.txt");
         
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
@@ -273,5 +282,111 @@ public class FashionShow {
             new FashionShow(N, M);
         }
       
+    }
+}
+
+//
+class Rook
+{
+    int []board;  // rows (vertical), store values of column
+    boolean colFilled[]; // spped up look up of used column
+    int N;
+    Rook(char grid[][])
+    {
+        N=grid.length;
+        board = new int[N];
+        colFilled = new boolean[N];
+        for (int r=0; r<N; r++)
+        {
+            board[r]=-1;
+            for (int c=0; c<N; c++) {
+                if (grid[r][c]=='x'||grid[r][c]=='o') {
+                    board[r]=c;
+                    colFilled[c]=true;
+                    break;
+                }
+            }
+        }
+        recurse(0);
+    }
+    boolean bDone=false;
+    void recurse(int r)
+    {
+        if ( r==N || bDone) {
+            bDone=true;
+            out.println(Arrays.toString(board));
+            return;
+        }
+        for (int c=0; c<N; c++) {
+            if (colFilled[c])
+                continue;
+            if (bDone)
+                break;
+            colFilled[c] = true;
+            board[r]=c;
+            recurse(r+1);
+            colFilled[c] = false;
+        }
+    }
+    char[][]getGrid()
+    {
+        char[][]g=new char[N][N];
+        for (char[] row: g)
+            Arrays.fill(row, '.');
+        for (int r=0; r<N; r++)
+            g[r][board[r]]='x';
+        return g;
+    }
+}
+class Bishop
+{
+    char [][]board;  // rows (vertical), store values of column
+    boolean fd[]; //foward diagnoal, r+c is same
+    boolean bd[]; // backward diagonal, r-c same
+    
+    int N;
+    Bishop(char grid[][])
+    {
+        N=grid.length;
+        board = new char[N][N];
+        fd = new boolean[2*N-1];
+        bd = new boolean[2*N-1];
+        for (int r=0; r<N; r++) { 
+            for (int c=0; c<N; c++) {
+                board[r][c]='.';
+                if (grid[r][c]=='+'||grid[r][c]=='o') {
+                    board[r][c]='+';
+                    fd[r+c]=true;
+                    bd[N-1+c-r] = true;
+                }
+            }
+        }
+        N2=N*N;
+        recurse(0);
+    }
+    boolean bDone=false;
+    int N2;//N*N
+    char save[][];
+    void recurse(int rc)
+    {
+        out.println(rc);
+        if ( rc==N2 || bDone) {
+            bDone=true;
+            save = new char[N][N];
+            FashionShow.copy(save, board);
+            return;
+        }
+        int r = rc/N;
+        int c = rc%N;
+        if (fd[r+c] || bd[N-1+c-r])
+            recurse(rc+1);
+        else {
+            board[r][c]='+';
+            fd[r+c]=true;
+            bd[N-1+c-r]=true;
+            recurse(rc+1);
+            fd[r+c]=false;
+            bd[N-1+c-r]=false;
+        }
     }
 }
