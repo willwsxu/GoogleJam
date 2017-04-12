@@ -16,7 +16,7 @@ public class FashionShow {
     int N2;
     int N;
     
-    void print(char[][]g)
+    static void print(char[][]g)
     {
         for (char [] row: g)
             out.println(Arrays.toString(row));
@@ -129,7 +129,7 @@ public class FashionShow {
         out.println(isValid(1,2,'+'));
         out.println(isValid(0,2,'+'));
     }
-    long compute()
+    long compute(char[][]grid)
     {
         long points=0;
         for (char[] r: grid)
@@ -167,10 +167,10 @@ public class FashionShow {
     }
     void backtracking(int rc) {
         if (rc==N2) {
-            long points = compute();
+            long points = compute(grid);
             if (maxPoints<points) {
                 maxPoints=points;
-                print(grid);
+                //print(grid);
                 copy(gridMax, grid);
                 //out.println(maxPoints);
             }
@@ -211,25 +211,30 @@ public class FashionShow {
         
     }
     // 
-    void placeRook( char row[])
-    {
-        
-    }
     static void copy(char [][]dest, char [][]source)
     {
         for (int i=0; i<source.length; i++)
             for(int j=0; j<source.length; j++)
                 dest[i][j]=source[i][j];
     }
+    void solveRookBishop()
+    {
+        Rook rk = new Rook(grid);
+        Bishop bp = new Bishop(grid);
+        for (int i=0; i<N;i++) {
+            int c= rk.board[i];
+            if (bp.save[i][c]=='.')
+                bp.save[i][c]='x';
+            else if (bp.save[i][c]=='+')
+                bp.save[i][c]='o';
+        }
+        gridMax=bp.save;
+        maxPoints = compute(gridMax);        
+    }
     FashionShow(int N, int M)
     {
         grid = new char[N][N];
         gridOri = new char[N][N];
-        gridMax = new char[N][N];
-        Rook rk = new Rook(grid);
-        Bishop bp = new Bishop(grid);
-        print(rk.getGrid());
-        print(bp.save);
         
         for (char[] row: grid)
             Arrays.fill(row, '.');
@@ -244,8 +249,13 @@ public class FashionShow {
         }
         N2 = N*N;
         this.N = N;
-        copy(gridOri, grid);
-        backtracking(0);  
+        copy(gridOri, grid);      
+        
+        solveRookBishop();
+        //gridMax = new char[N][N];
+        //backtracking(0);    
+        print(gridMax);
+        
         List<String> add = new ArrayList<>(10);
         for (int i=0; i<N; i++)
             for(int j=0; j<N; j++)
@@ -307,6 +317,7 @@ class Rook
                 }
             }
         }
+        out.println(Arrays.toString(board));
         recurse(0);
     }
     boolean bDone=false;
@@ -315,6 +326,10 @@ class Rook
         if ( r==N || bDone) {
             bDone=true;
             out.println(Arrays.toString(board));
+            return;
+        }
+        if (board[r]>=0) {
+            recurse(r+1);
             return;
         }
         for (int c=0; c<N; c++) {
@@ -335,6 +350,7 @@ class Rook
             Arrays.fill(row, '.');
         for (int r=0; r<N; r++)
             g[r][board[r]]='x';
+        FashionShow.print(g);
         return g;
     }
 }
@@ -363,13 +379,14 @@ class Bishop
         }
         N2=N*N;
         recurse(0);
+        FashionShow.print(save);
     }
     boolean bDone=false;
     int N2;//N*N
     char save[][];
     void recurse(int rc)
     {
-        out.println(rc);
+        //out.println(rc);
         if ( rc==N2 || bDone) {
             bDone=true;
             save = new char[N][N];
@@ -388,5 +405,13 @@ class Bishop
             fd[r+c]=false;
             bd[N-1+c-r]=false;
         }
+    }
+    int findLeastAvailRow()
+    {
+        return 0;
+    }
+    void iterate()
+    {
+        
     }
 }
