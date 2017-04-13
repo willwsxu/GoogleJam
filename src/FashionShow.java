@@ -251,10 +251,9 @@ public class FashionShow {
         this.N = N;
         copy(gridOri, grid);      
         
-        solveRookBishop();
-        //gridMax = new char[N][N];
-        //backtracking(0);    
-        print(gridMax);
+        //solveRookBishop();
+        gridMax = new char[N][N];
+        backtracking(0);  
         
         List<String> add = new ArrayList<>(10);
         for (int i=0; i<N; i++)
@@ -267,21 +266,15 @@ public class FashionShow {
         out.println(maxPoints+" "+add.size());
         for (int i=0; i<add.size(); i++)
             out.println(add.get(i));
-        //print(gridMax);
+        print(gridMax);
     }
     
     static Scanner scan = new Scanner(System.in);  
     public static void main(String[] args) throws FileNotFoundException
     {
-        //PrintStream console = System.out;
-        //System.setOut(console);
         //getMaxPoints();
 
-        File file = new File("out.txt");
-        FileOutputStream fos = new FileOutputStream(file);
-        PrintStream ps = new PrintStream(fos);
-        
-        //System.setOut(ps);
+        //googlejam.CodeChef.redirect("out.txt");
         scan = googlejam.CodeChef.getFileScanner("fashionshow-t1.txt");
         
         int TC = scan.nextInt(); // 1 to 100
@@ -378,19 +371,32 @@ class Bishop
             }
         }
         N2=N*N;
+        save = new char[N][N];
         recurse(0);
-        FashionShow.print(save);
     }
     boolean bDone=false;
     int N2;//N*N
     char save[][];
+    int maxBishop=0;
+    int count(char[][] g)
+    {
+        int count=0;
+        for(int i=0; i<N; i++)
+            for (int j=0; j<N; j++)
+                if (g[i][j]=='+')
+                    count++;
+        return count;
+    }
     void recurse(int rc)
     {
         //out.println(rc);
-        if ( rc==N2 || bDone) {
+        if ( rc==N2 ) {//|| bDone
             bDone=true;
-            save = new char[N][N];
-            FashionShow.copy(save, board);
+            int c = count(board);
+            if ( c>maxBishop ) {
+                FashionShow.copy(save, board);
+                FashionShow.print(save);
+            }
             return;
         }
         int r = rc/N;
