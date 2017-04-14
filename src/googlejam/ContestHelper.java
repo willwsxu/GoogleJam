@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package googlejam;// borrowed from codechef repo
 
 import java.io.BufferedReader;
@@ -17,11 +13,7 @@ import java.io.PrintWriter;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- *
- * @author wxu
- */
-public class CodeChef {
+public class ContestHelper {
 
     /**
      * @param args the command line arguments

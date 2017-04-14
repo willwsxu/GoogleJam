@@ -35,7 +35,7 @@ public class PancakeRevenge {
     static Scanner scan = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        scan = googlejam.CodeChef.getFileScanner("pancake-b.txt");
+        scan = googlejam.ContestHelper.getFileScanner("pancake-b.txt");
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             String pancakes = scan.nextLine(); // 1 to 100
