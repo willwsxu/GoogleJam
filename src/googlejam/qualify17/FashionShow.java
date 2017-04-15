@@ -1,3 +1,5 @@
+package googlejam.qualify17;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -251,9 +253,9 @@ public class FashionShow {
         this.N = N;
         copy(gridOri, grid);      
         
-        //solveRookBishop();
-        gridMax = new char[N][N];
-        backtracking(0);  
+        solveRookBishop();
+        //gridMax = new char[N][N];
+        //backtracking(0);  
         
         List<String> add = new ArrayList<>(10);
         for (int i=0; i<N; i++)
@@ -275,7 +277,7 @@ public class FashionShow {
         //getMaxPoints();
 
         //googlejam.CodeChef.redirect("out.txt");
-        scan = googlejam.CodeChef.getFileScanner("fashionshow-t1.txt");
+        scan = googlejam.ContestHelper.getFileScanner("fashionshow-t1.txt");
         
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
@@ -390,12 +392,13 @@ class Bishop
     void recurse(int rc)
     {
         //out.println(rc);
-        if ( rc==N2 ) {//|| bDone
-            bDone=true;
+        if ( rc==N2) {// || bDone
+            //bDone=true;
             int c = count(board);
             if ( c>maxBishop ) {
                 FashionShow.copy(save, board);
                 FashionShow.print(save);
+                maxBishop=c;
             }
             return;
         }
@@ -414,6 +417,12 @@ class Bishop
     }
     int findLeastAvailRow()
     {
+        int lo=Integer.MAX_VALUE;
+        for (int i=0; i<N;i++) {
+            for (int j=0; j<N; j++) {
+                
+            }
+        }
         return 0;
     }
     void iterate()
