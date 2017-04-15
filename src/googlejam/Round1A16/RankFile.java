@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+// all the numbers has to apprear twice, in row list and column list
 public class RankFile {
     
     List<int[]> lists;
@@ -89,7 +90,7 @@ public class RankFile {
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int N = scan.nextInt(); // 2 to 50
-            List<int[]> lists=new ArrayList<>(2*N-1);
+            int lists[]=new int[2**N-N];
             int min=999999;
             int max=0;
             for ( int j=0; j<2*N-1; j++) 
