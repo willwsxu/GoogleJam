@@ -91,6 +91,7 @@ public class AlphaCake {
     // First, within each row, we can extend each existing letter into all cells to the right of that letter, 
     // until we reach another existing letter or the edge of the cake. Then, we can extend the leftmost 
     // existing letter (if any) into all cells to the left of that letter.
+    // next step is to fill down and up
     void greedy()
     {
         for (int i=0; i<R;i++) {
@@ -123,7 +124,7 @@ public class AlphaCake {
                 break;
             }
         }
-        if ( first<0)  // no leeters in the grid, never should happen
+        if ( first<0)  // no letters in the grid, never should happen
             return;
         for (int j=0; j<C;j++) {
             for (int i=first+1; i<R;i++) {
@@ -163,6 +164,7 @@ public class AlphaCake {
         greedy();
         print();
     }
+    
     static Scanner scan = new Scanner(System.in);  
     public static void main(String[] args)  
     {
