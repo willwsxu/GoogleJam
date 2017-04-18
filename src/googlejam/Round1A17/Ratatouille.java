@@ -119,8 +119,8 @@ public class Ratatouille {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("ratatouille-t.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("B-small-practice.in");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
