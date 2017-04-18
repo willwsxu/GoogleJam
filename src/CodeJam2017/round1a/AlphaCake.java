@@ -1,4 +1,4 @@
-package googlejam.Round1A17;
+package CodeJam2017;
 
 
 import static java.lang.System.out;
