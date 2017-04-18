@@ -1,4 +1,4 @@
-package CodeJam2017;
+package CodeJam2017.round1a;
 
 
 import static java.lang.System.out;

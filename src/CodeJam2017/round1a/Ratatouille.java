@@ -11,7 +11,7 @@
  * Loop on packages on first ingredient, end when any ingredient run out of packages
  * discard any package whose hi is lower than low
  */
-package CodeJam2017;
+package CodeJam2017.round1a;
 
 import static java.lang.System.out;
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class Ratatouille {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("B-small-practice.in");
+        sc = googlejam.ContestHelper.getFileScanner("round1a17\\ratatouille-s.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
