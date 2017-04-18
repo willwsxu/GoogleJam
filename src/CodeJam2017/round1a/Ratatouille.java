@@ -11,7 +11,7 @@
  * Loop on packages on first ingredient, end when any ingredient run out of packages
  * discard any package whose hi is lower than low
  */
-package googlejam.Round1A17;
+package CodeJam2017;
 
 import static java.lang.System.out;
 import java.util.ArrayList;
