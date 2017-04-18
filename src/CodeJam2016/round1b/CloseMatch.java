@@ -7,6 +7,7 @@ package CodeJam2016.round1b;
 
 import static java.lang.Integer.min;
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class CloseMatch {
@@ -27,6 +28,15 @@ public class CloseMatch {
         }
         return bigger;
     }
+    String fill0(String str, int len)  // fill 0 at beginning
+    {
+        char[] c=new char[len];
+        Arrays.fill(c, '0');
+        String s = new String(c)+str;
+        //out.println("fill "+s);
+        return s;
+    }
+    
     void greedy(String C, String J)
     {
         int c=0;
@@ -35,15 +45,12 @@ public class CloseMatch {
         StringBuilder newC=new StringBuilder(), newJ=new StringBuilder();
         int len = min(C.length(), J.length());
         if (C.length()>len) {
-            c = C.length()-len;
-            if (headStart(C, newC, c))
-                cmp=1;
+            J = fill0(J, C.length()-len);
         }
-        if (J.length()>len) {
-            j = J.length()-len;
-            if (headStart(J, newJ, j))
-                cmp=-1;        
+        else if (J.length()>len) {
+            C = fill0(C, J.length()-len);
         }
+        len = C.length();
         for (int i=0; i<len; i++) {
             int lookahead=0;
             if (i<len-1) {
@@ -129,9 +136,9 @@ public class CloseMatch {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("B-small-practice (1).in");
-        sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
+        //sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
