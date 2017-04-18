@@ -1,4 +1,4 @@
-package googlejam.Round1A16;
+package CodeJam2016.round1a;
 
 
 import static java.lang.System.out;

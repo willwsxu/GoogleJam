@@ -1,4 +1,4 @@
-package googlejam.qualify17;
+package CodeJam2017.qualification;
 
 
 import java.io.File;
@@ -275,6 +275,8 @@ public class FashionShow {
     static Scanner scan = new Scanner(System.in);  
     public static void main(String[] args) throws FileNotFoundException
     {
+        getMaxPoints();
+        /*
         googlejam.ContestHelper.redirect("out.txt");
         scan = googlejam.ContestHelper.getFileScanner("D-large-practice.in");
         
@@ -284,7 +286,7 @@ public class FashionShow {
             int M = scan.nextInt(); // 0 to N^2  models  
             out.print("Case #"+(i+1)+": ");
             new FashionShow(N, M);
-        }        
+        }*/    
     }
 }
 
@@ -372,7 +374,6 @@ class Bishop
         }
         N2=N*N;
         save = new char[N][N];
-        //recurse(0);
     }
     boolean bDone=false;
     int N2;//N*N

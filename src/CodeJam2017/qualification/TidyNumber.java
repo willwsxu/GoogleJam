@@ -1,4 +1,4 @@
-package googlejam.qualify17;
+package CodeJam2017.qualification;
 
 
 import static java.lang.System.out;
