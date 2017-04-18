@@ -10,6 +10,9 @@ package googlejam.Round1A17;
 
 import static java.lang.System.out;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,7 +39,7 @@ public class Ratatouille {
         P = Q[0].length;
         
         greedy();
-        print();
+        //print();
     }
     void greedy()
     {
@@ -47,8 +50,6 @@ public class Ratatouille {
                 int lodenom=11*R[i]; // multiple value by 10 so no need to use double
                 int hidenom=9*R[i]; 
                 int q = Q[i][j]*10;
-                //double hi = (double)Q[i][j]/(.9*R[i]);
-                //double lo = (double)Q[i][j]/(1.1*R[i]);
                 int iLow = q/lodenom;
                 if (q%lodenom>0)
                     iLow++;
@@ -56,10 +57,51 @@ public class Ratatouille {
                 if (iLow<=iHi) {
                     multiples.get(i).add(new Multiple(iLow, iHi));
                 }
-                else
-                    out.println("discard invalid package "+(j+1)+" wt="+Q[i][j]+" need "+R[i]);
+                else {
+                    //out.println("discard invalid package "+(j+1)+" wt="+Q[i][j]+" need "+R[i]);
+                }
             }
         }
+        for (int k=0; k<N; k++) {
+            if (0==multiples.get(k).size()) {
+                out.println(0);
+                return;       
+            }
+        }
+        if (N==1) {
+            out.println(multiples.get(0).size());
+            return;
+        }
+        Comparator<Multiple> cmp1 = (m1, m2)->m1.lo-m2.lo;  // sort lo range
+        Comparator<Multiple> cmp2 = (m1, m2)->m1.hi-m2.hi;  // sort hi range
+        for (int i=0; i<N; i++) {
+            Collections.sort(multiples.get(i), cmp1);
+            Collections.sort(multiples.get(i), cmp2); // sort is stable
+        }   
+        int index[]=new int[N]; // for package 1 to P
+        Arrays.fill(index, 0);
+        int kits=0;
+        outterfor:
+        for (int j=0; j<multiples.get(0).size(); j++) { // packages of first ingredient
+            Multiple first = multiples.get(0).get(j); // compare it rest
+            for (int k=1; k<N; k++) {
+                if (first.hi<multiples.get(k).get(index[k]).lo)
+                {
+                    continue outterfor;
+                }
+                while (multiples.get(k).get(index[k]).hi<first.lo) {
+                    if (++index[k]==multiples.get(k).size())
+                        break outterfor;
+                }
+            }
+            kits++;  
+            // move to next packaage
+            for (int k=1; k<N; k++) {
+                if (++index[k]==multiples.get(k).size())
+                    break outterfor;                
+            }
+        }
+        out.println(kits);
     }
     
     void print()
@@ -93,7 +135,7 @@ public class Ratatouille {
                     Q[j][k]=sc.nextInt();
                 }
             }
-            out.println("Case #"+(i+1)+": ");
+            out.print("Case #"+(i+1)+": ");
             new Ratatouille(R, Q);
         }
     }
