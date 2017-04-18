@@ -5,6 +5,11 @@
  * package can be included in a kit if its weight is within [90% to 110%] of recommended weight, 
  *   could be for more than one servings
  * output: maximum kits can be produced
+ * strategy: calculate ranges of servings of each packet. discard packets not useable
+ * solve simple cases first, no valid package in one of the ingrediant, one ingredient only
+ * Sort packets by low range first, then hi range. high range is more useful and should be picked late
+ * Loop on packages on first ingredient, end when any ingredient run out of packages
+ * discard any package whose hi is lower than low
  */
 package googlejam.Round1A17;
 

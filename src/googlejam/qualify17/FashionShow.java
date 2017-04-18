@@ -223,14 +223,15 @@ public class FashionShow {
     {
         Rook rk = new Rook(grid);
         Bishop bp = new Bishop(grid);
+        bp.greedy();
         for (int i=0; i<N;i++) {
             int c= rk.board[i];
-            if (bp.save[i][c]=='.')
-                bp.save[i][c]='x';
-            else if (bp.save[i][c]=='+')
-                bp.save[i][c]='o';
+            if (bp.board[i][c]=='.')
+                bp.board[i][c]='x';
+            else if (bp.board[i][c]=='+')
+                bp.board[i][c]='o';
         }
-        gridMax=bp.save;
+        gridMax=bp.board;
         maxPoints = compute(gridMax);        
     }
     FashionShow(int N, int M)
@@ -268,16 +269,14 @@ public class FashionShow {
         out.println(maxPoints+" "+add.size());
         for (int i=0; i<add.size(); i++)
             out.println(add.get(i));
-        print(gridMax);
+        //print(gridMax);
     }
     
     static Scanner scan = new Scanner(System.in);  
     public static void main(String[] args) throws FileNotFoundException
     {
-        //getMaxPoints();
-
-        //googlejam.CodeChef.redirect("out.txt");
-        scan = googlejam.ContestHelper.getFileScanner("fashionshow-t1.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        scan = googlejam.ContestHelper.getFileScanner("D-large-practice.in");
         
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
@@ -285,8 +284,7 @@ public class FashionShow {
             int M = scan.nextInt(); // 0 to N^2  models  
             out.print("Case #"+(i+1)+": ");
             new FashionShow(N, M);
-        }
-      
+        }        
     }
 }
 
@@ -312,7 +310,7 @@ class Rook
                 }
             }
         }
-        out.println(Arrays.toString(board));
+        //out.println(Arrays.toString(board));
         recurse(0);
     }
     boolean bDone=false;
@@ -320,7 +318,7 @@ class Rook
     {
         if ( r==N || bDone) {
             bDone=true;
-            out.println(Arrays.toString(board));
+            //out.println(Arrays.toString(board));
             return;
         }
         if (board[r]>=0) {
@@ -374,7 +372,7 @@ class Bishop
         }
         N2=N*N;
         save = new char[N][N];
-        recurse(0);
+        //recurse(0);
     }
     boolean bDone=false;
     int N2;//N*N
@@ -418,15 +416,81 @@ class Bishop
     int findLeastAvailRow()
     {
         int lo=Integer.MAX_VALUE;
-        for (int i=0; i<N;i++) {
-            for (int j=0; j<N; j++) {
-                
+        int rowmin=-1;
+        for (int i=0; i<N;i++) {  // forward diagonal is the row
+            int count=0;  // count empty on a row
+            if (fd[i])  // row has a bishop
+                continue;
+            for (int j=i; j>=0; j--) { // backward diagonal is the column 
+                if (!bd[N-1+i-2*j] )  // backward diagnoal is not attacked
+                    count++;
+            }
+            if ( count<lo) {
+                lo=count;
+                rowmin=i;
             }
         }
-        return 0;
+        for (int i=N; i<2*N-1;i++) {  // forward diagonal is the row
+            int count=0;  // count empty on a row
+            if (fd[i])  // row has a bishop
+                continue;
+            for (int j=N-1; j>=i-N+1; j--) { // backward diagonal is the column
+                if (!bd[N-1+i-2*j] )  // backward diagnoal is not attacked
+                    count++;
+            }
+            if ( count<lo) {
+                lo=count;
+                rowmin=i;
+            }
+        }
+        return rowmin;
     }
-    void iterate()
+    void placeBishop(int r)
     {
-        
+        if (fd[r])
+            return;
+        if (r<N) {
+            for (int j=r; j>=0; j--) {
+                if (!bd[N-1+r-2*j] ) {
+                    board[r][r-j]='+';
+                    bd[N-1+r-2*j]=true;
+                    break;
+                }
+            }
+        } else {
+            for (int j=N-1; j>=r-N+1; j--) {
+                if (!bd[N-1+r-2*j] ) {
+                    board[j][r-j]='+';
+                    bd[N-1+r-2*j]=true;     
+                    break;
+                }
+            }
+        }
+        fd[r]=true;
+    }
+    // rotate board 45 degree clock wise, treat biship like rook, but there are 2N-1 rows
+    // row 0: (0,0)     row 1: (1,0), (0,1),... row N-1: (N-1,0) ...(0, N-1)
+    // row N:  (N-1,1),...(1, N-1)
+    // row N+1: (N-1, 2), ..., (2, N-1)
+    // row 2N-2: (N-1, N-1)
+    void greedy()
+    {
+        for (int i=0; i<2*N-1;i++) {
+            int r = findLeastAvailRow();
+            if (r<0)
+                break;
+            placeBishop(r);
+        }
+    }
+    
+    static void test()
+    {
+        Bishop b = new Bishop(new char[8][8]);
+        b.greedy();
+        FashionShow.print(b.board);
+        b = new Bishop(new char[8][8]);
+        b.recurse(0);
+        FashionShow.print(b.board);
+        FashionShow.print(b.save);
     }
 }
