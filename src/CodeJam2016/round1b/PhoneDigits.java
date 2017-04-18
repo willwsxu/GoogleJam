@@ -30,7 +30,7 @@ public class PhoneDigits {
         return false;
     }
     List<Character> str = new ArrayList<>(2000);
-    void solve(String s)
+    void greedy(String s)
     {
         for (int i=0; i<s.length(); i++)
             str.add(s.charAt(i));
@@ -73,7 +73,7 @@ public class PhoneDigits {
         for (int i=0; i<TC; i++) {
             String S = sc.next(); // 3 ≤ N ≤ 2000
             out.print("Case #"+(i+1)+": ");
-            new PhoneDigits().solve(S);
+            new PhoneDigits().greedy(S);
         }
     }
 }
