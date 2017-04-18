@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-// all the numbers has to apprear twice, in row list and column list
+// IDEA: all the numbers has to apprear twice, in row list and column list
 public class RankFile {
     
     int[] lists;

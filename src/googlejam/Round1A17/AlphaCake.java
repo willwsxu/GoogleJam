@@ -168,8 +168,8 @@ public class AlphaCake {
     static Scanner scan = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        scan = googlejam.ContestHelper.getFileScanner("alphacake-t.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        scan = googlejam.ContestHelper.getFileScanner("alphacake-l.in.txt");
         
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
