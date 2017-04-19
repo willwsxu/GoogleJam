@@ -272,7 +272,7 @@ public class FashionShow {
     public static void main(String[] args)
     {        
         googlejam.ContestHelper.redirect("out.txt");
-        scan = googlejam.ContestHelper.getFileScanner("fashionshow-s.in.txt");
+        scan = googlejam.ContestHelper.getFileScanner("fashionshow-l.in.txt");
         //scan = googlejam.ContestHelper.getFileScanner("fashionshow-t1.txt");
         
         int TC = scan.nextInt(); // 1 to 100
@@ -328,6 +328,7 @@ class Rook
         }            
     }
     boolean bDone=false;
+    void backtracking(int r)  // no need to backtrack here
     {
         if ( r==N) {
             out.println("Rook:"+Arrays.toString(board));
