@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * the absolute difference between the integers represented by c and j is minimized. 
+ * If there are multiple solutions with the same absolute difference, use the one in 
+ * which c is minimized; if there are multiple solutions with the same absolute 
+ * difference and the same value of c, use the one in which j is minimized.
  */
 package CodeJam2016.round1b;
 
@@ -130,20 +131,179 @@ public class CloseMatch {
         }
         out.println(newC.toString()+" "+newJ.toString());
     }
+    void fill(String str, StringBuilder sb, int f, char c) {
+        for (int j=f; j<str.length(); j++) {
+            if (str.charAt(j)=='?')
+                sb.append(c);
+            else
+                sb.append(str.charAt(j));
+        }
+    }
+    
+    void fillSame(char cc, char jj, StringBuilder newC, StringBuilder newJ)
+    {
+        if (cc=='?' && jj=='?') {
+            newC.append('0');
+            newJ.append('0');
+        }
+        else if (cc=='?') {
+            newC.append(jj);
+            newJ.append(jj);                        
+        } else if (jj=='?') {
+            newC.append(cc);
+            newJ.append(cc);                           
+        } else {
+            newC.append(cc);
+            newJ.append(jj);                                
+        }
+    }
+    void greedy2(String C, String J)
+    {
+        StringBuilder newC=new StringBuilder(), newJ=new StringBuilder();
+        int len = C.length();
+        outterfor:
+        for (int i=0; i<len; i++) {
+            char cc=C.charAt(i);
+            char jj=J.charAt(i);
+            if (cc !='?' && jj !='?') {
+                if (cc!=jj) {  // 1?? 23?
+                    boolean cmp = cc>jj;
+                    fill(C, newC, i, cmp?'0':'9');
+                    fill(J, newJ, i, cmp?'9':'0');
+                    break;
+                }
+                else { // 91?? 923?
+                    newC.append(cc);
+                    newJ.append(jj);
+                }
+            }else {  // one current char is '?'
+                int lookAhead=0;
+                for (int k=i+1; k<len; k++) {
+                    if (C.charAt(k)=='?' || J.charAt(k)=='?') { // ?2?9 ?242  ?2?9 ?249 ?2?9 ?2??
+                        fillSame(cc,jj,newC,newJ);
+                        continue outterfor;  // defer decision to last ? before differing digits
+                    }
+                    else if ( C.charAt(k)==J.charAt(k))
+                        continue;
+                    else {
+                        lookAhead = C.charAt(k)-J.charAt(k);
+                        break;
+                    }
+                }
+                if (lookAhead==0) { // 9?23 9?23 or ? 9
+                    for (int k=i; k<len; k++) {
+                        fillSame(C.charAt(k), J.charAt(k), newC, newJ);
+                    }
+                } else {
+                    // make a copy for two possible solutions
+                    StringBuilder newC2 = new StringBuilder();
+                    StringBuilder newJ2 = new StringBuilder();
+                    newC2.append(newC.toString());
+                    newJ2.append(newJ.toString());
+                    // keep it consistent newC<newJ, newC2>newJ2
+                    if (lookAhead<0) {
+                        if (cc=='?' && jj=='?') { //?41 ?91 ?41 ?90 ?40 ?91
+                            newC.append('0');
+                            newJ.append('0');
+                            newC2.append('1');
+                            newJ2.append('0');
+                        } else if (cc=='?') { // ?3 89  ?4 89 ?3 99
+                            newC.append(jj);
+                            newJ.append(jj);
+                            if (jj<'9') {
+                                newC2.append((char)(jj+1));
+                                newJ2.append(jj);
+                            } else {  // mark as duplicate case
+                                newC2=null;
+                                newJ2=null;
+                            }
+                        } else {             // 12 ?9 02 ?9 ** 14 ?9
+                            newC.append(cc);
+                            newJ.append(cc);
+                            if (cc>'0') {
+                                newJ2.append((char)(cc-1));
+                                newC2.append(cc); 
+                            } else {  // mark as duplicate case
+                                newC2=null;
+                                newJ2=null;  
+                            }
+                        }                  
+                    } else { // C>J   
+                        if (cc=='?' && jj=='?') { //?9 ?2 ?9 ?4 ?9 ?6
+                            newC2.append('0');
+                            newJ2.append('0');
+                            newC.append('0');
+                            newJ.append('1');
+                        } else if (cc=='?') { // ?9 12 ?9 14 ?9 02
+                            newC2.append(jj);
+                            newJ2.append(jj);
+                            if (jj>'0') {
+                                newC.append((char)(jj-1));
+                                newJ.append(jj);
+                            } else {  // mark as duplicate case
+                                newC=null;
+                                newJ=null;
+                            }
+                        } else {  // 89 ?2 89 ?4 99 ?2
+                            newC2.append(cc);
+                            newJ2.append(cc);
+                            if (cc<'9') {
+                                newC.append(cc);   
+                                newJ.append((char)(cc+1));
+                            } else {  // mark as duplicate case
+                                newC=null;
+                                newJ=null;
+                            }
+                        }                       
+                    }
+                    if ( newC !=null ) {
+                        fill(C, newC, i+1, '9');
+                        fill(J, newJ, i+1, '0');
+                    }
+                    if (newC2 != null) {
+                        fill(C, newC2, i+1, '0');
+                        fill(J, newJ2, i+1, '9');   
+                    }
+                    if ( newC ==null ) {
+                        newC=newC2;
+                        newJ = newJ2;
+                    } else if (newC2 !=null) {
+                        long diff1 = Long.parseLong(newC.toString())-Long.parseLong(newJ.toString());
+                        long diff2 = Long.parseLong(newC2.toString())-Long.parseLong(newJ2.toString());
+                        if (diff1<0)
+                            diff1 = -diff1;
+                        if (diff2<0)
+                            diff2 = -diff2;
+                        if (diff2<diff1) {
+                            newC=newC2;
+                            newJ=newJ2;
+                        } else if (diff2==diff1) {
+                            if ( Long.parseLong(newC2.toString())<Long.parseLong(newC.toString()) )
+                                newC = newC2;
+                            if ( Long.parseLong(newJ2.toString()) < Long.parseLong(newJ.toString()) )
+                                newJ = newJ2;
+                        }                       
+                    }
+                }
+                break;
+            }
+        }
+        out.println(newC.toString()+" "+newJ.toString());        
+    }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
-        sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
+        //sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             String C = sc.next(); // 1 ≤ len(C) ≤ 18
             String J = sc.next(); // 1 ≤ len(J) ≤ 18
             out.print("Case #"+(i+1)+": ");
-            new CloseMatch().greedy(C, J);
+            new CloseMatch().greedy2(C, J);
         }
     }
 }
