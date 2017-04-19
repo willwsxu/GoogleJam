@@ -208,10 +208,6 @@ public class FashionShow {
             }
         }
     }
-    void iterate()
-    {
-        
-    }
     // 
     static void copy(char [][]dest, char [][]source)
     {
@@ -273,12 +269,11 @@ public class FashionShow {
     }
     
     static Scanner scan = new Scanner(System.in);  
-    public static void main(String[] args) throws FileNotFoundException
-    {
-        getMaxPoints();
-        /*
+    public static void main(String[] args)
+    {        
         googlejam.ContestHelper.redirect("out.txt");
-        scan = googlejam.ContestHelper.getFileScanner("D-large-practice.in");
+        scan = googlejam.ContestHelper.getFileScanner("fashionshow-s.in.txt");
+        //scan = googlejam.ContestHelper.getFileScanner("fashionshow-t1.txt");
         
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
@@ -286,7 +281,7 @@ public class FashionShow {
             int M = scan.nextInt(); // 0 to N^2  models  
             out.print("Case #"+(i+1)+": ");
             new FashionShow(N, M);
-        }*/    
+        }  
     }
 }
 
@@ -294,7 +289,7 @@ public class FashionShow {
 class Rook
 {
     int []board;  // rows (vertical), store values of column
-    boolean colFilled[]; // spped up look up of used column
+    boolean colFilled[]; // speed up look up of used column
     int N;
     Rook(char grid[][])
     {
@@ -312,15 +307,31 @@ class Rook
                 }
             }
         }
-        //out.println(Arrays.toString(board));
         recurse(0);
+        //out.println("Rook final:"+Arrays.toString(board));
     }
-    boolean bDone=false;
     void recurse(int r)
     {
-        if ( r==N || bDone) {
+        if (r==N)
+            return;
+        if (board[r]>=0) {
+            recurse(r+1);
+            return;
+        }
+        for (int c=0; c<N; c++) {
+            if (colFilled[c])
+                continue;
+            colFilled[c] = true;
+            board[r]=c;
+            recurse(r+1);
+            break;
+        }            
+    }
+    boolean bDone=false;
+    {
+        if ( r==N) {
+            out.println("Rook:"+Arrays.toString(board));
             bDone=true;
-            //out.println(Arrays.toString(board));
             return;
         }
         if (board[r]>=0) {
