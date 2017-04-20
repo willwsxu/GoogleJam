@@ -399,7 +399,7 @@ public class CloseMatch {
         sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1b\\closematch-l.in.txt");
         //sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1b\\closematch-t.txt");
         
-        int TC = sc.nextInt(); // 1 to 100
+        int TC = sc.nextInt(); // 1 to 200
         for (int i=0; i<TC; i++) {
             String C = sc.next(); // 1 ≤ len(C) ≤ 18
             String J = sc.next(); // 1 ≤ len(J) ≤ 18
