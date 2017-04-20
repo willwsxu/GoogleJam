@@ -405,8 +405,8 @@ public class CloseMatch {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
-        sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
+        sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
+        //sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
