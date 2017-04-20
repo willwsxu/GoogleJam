@@ -202,11 +202,11 @@ public class CloseMatch {
             }else {  // one current char is '?'
                 int lookAhead=0;
                 for (int k=i+1; k<len; k++) {
-                    if (C.charAt(k)=='?' && J.charAt(k)=='?') { // ?2?9 ?242  ?2?9 ?249 ?2?9 ?2??
-                        fillSame(cc,jj,newC,newJ);
-                        continue outterfor;  // defer decision to last ? before differing digits
-                    } 
-                    else if (C.charAt(k)=='?' || J.charAt(k)=='?') {  // hard problem for looking ahead ??0 ?99
+                    if (C.charAt(k)=='?' || J.charAt(k)=='?') { // ?2?9 ?242  ?2?9 ?249 ?2?9 ?2??
+//                        fillSame(cc,jj,newC,newJ);
+//                        continue outterfor;  // defer decision to last ? before differing digits
+//                    } 
+//                    else if (C.charAt(k)=='?' || J.charAt(k)=='?') {  // hard problem for looking ahead ??0 ?99
                         // use same idea in greedy3
                         earlydecision(cc, jj, C, J, newC, newJ, i+1);
                         continue outterfor;
