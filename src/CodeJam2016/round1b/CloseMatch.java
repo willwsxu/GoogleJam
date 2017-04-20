@@ -291,19 +291,129 @@ public class CloseMatch {
         out.println(newC.toString()+" "+newJ.toString());        
     }
     
+    class Answer{
+        String C;
+        String J;
+        long vC, vJ;
+        long diff;
+        Answer(String c, String j) {
+            C=c; J=j;
+            calc();
+        }
+        void calc(){
+            vC = Long.parseLong(C.toString());
+            vJ = Long.parseLong(J.toString());
+            diff = vC-vJ;  
+            if (diff<0)
+                diff=-diff;
+        }
+        private void copy(Answer ans)
+        {
+            C=ans.C;    
+            vC=ans.vC; 
+            J=ans.J; 
+            vJ = ans.vJ;
+            diff = ans.diff;
+        }
+        void compareExchange(String c, String j) {
+            Answer ans = new Answer(c, j);
+            if ( ans.diff < diff) {
+                copy(ans);
+            } else if (ans.diff==diff) {
+                if (ans.vC < vC) {
+                    C=ans.C;    
+                    vC=ans.vC; 
+                    diff = ans.diff;                    
+                }
+                if (ans.vJ < vJ) {
+                    J=ans.J; 
+                    vJ = ans.vJ;
+                    diff = ans.diff;                    
+                }
+            }
+        }
+    }
+    Answer ans=null;
+    void addAnswer(String c, String j)
+    {
+        //out.println("ans:"+c+" "+j);
+        if (ans==null)
+            ans=new Answer(c, j);
+        else
+            ans.compareExchange(c, j);
+    }
+    void addAnswer(String C, String J, StringBuilder newC, StringBuilder newJ, char c, char j, int i)
+    {
+        // make a copy try out potential solution
+        StringBuilder newC2 = new StringBuilder();
+        StringBuilder newJ2 = new StringBuilder();
+        newC2.append(newC.toString());
+        newJ2.append(newJ.toString());
+        newC2.append(c);
+        newJ2.append(j);
+        fill(C, newC2, i, c<j?'9':'0');
+        fill(J, newJ2, i, c<j?'0':'9');
+        addAnswer(newC2.toString(), newJ2.toString());
+    }
+    
+    void greedy3(String C, String J)
+    {
+        if (C.length() != J.length())
+            return;
+        StringBuilder newC=new StringBuilder(), newJ=new StringBuilder();
+        for (int i=0; i<C.length(); i++) {
+            char cc=C.charAt(i);
+            char jj=J.charAt(i);
+            if (cc != '?' && jj != '?') {
+                if (cc!=jj) {  // 1?? 23?
+                    boolean cmp = cc>jj;
+                    fill(C, newC, i, cmp?'0':'9');
+                    fill(J, newJ, i, cmp?'9':'0');
+                    //addAnswer(newC.toString(), newJ.toString());
+                    break;
+                }
+                else { // 91?? 923?
+                    newC.append(cc);
+                    newJ.append(jj);
+                }
+            } else if ( cc=='?' && jj=='?') {
+                addAnswer(C, J, newC, newJ, '0', '1', i+1);
+                addAnswer(C, J, newC, newJ, '1', '0', i+1);
+                newC.append('0');
+                newJ.append('0');
+            } else if ( cc=='?') {
+                if (jj<'9')
+                    addAnswer(C, J, newC, newJ, (char)(jj+1), jj, i+1); 
+                if (jj>'0')
+                    addAnswer(C, J, newC, newJ, (char)(jj-1), jj, i+1); 
+                newC.append(jj);
+                newJ.append(jj);
+            } else {
+                if (cc<'9')
+                    addAnswer(C, J, newC, newJ, cc, (char)(cc+1), i+1); 
+                if (cc>'0')
+                    addAnswer(C, J, newC, newJ, cc, (char)(cc-1), i+1); 
+                newC.append(cc);
+                newJ.append(cc);
+            }
+        }
+        addAnswer(newC.toString(), newJ.toString());
+        out.println(ans.C+" "+ans.J);      
+    }
+    
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
+        //sc = googlejam.ContestHelper.getFileScanner("closematch-s.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("closematch-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             String C = sc.next(); // 1 ≤ len(C) ≤ 18
             String J = sc.next(); // 1 ≤ len(J) ≤ 18
             out.print("Case #"+(i+1)+": ");
-            new CloseMatch().greedy2(C, J);
+            new CloseMatch().greedy3(C, J);
         }
     }
 }
