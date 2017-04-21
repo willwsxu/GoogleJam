@@ -43,8 +43,10 @@ public class Slides {
     }
     void combinatorics(int B, long M)
     {
-        long maxWays = 1<<(B-2);
+        long maxWays=1;
+        maxWays <<= (B-2);  // must use long type 1<< 48 would overflow as int
         if ( M>maxWays ) {
+            //out.println(maxWays+"-"+M);
             out.println("IMPOSSIBLE");
             return;
         }
@@ -68,12 +70,17 @@ public class Slides {
         print(B);
     }
     
+    static void test()
+    {
+        new Slides().combinatorics(50, 281474976710656L);
+    }
+    
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
         sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1c\\slides-l.in.txt");
-        
+        //test();
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int B = sc.nextInt();  // 2 ≤ B ≤ 50
