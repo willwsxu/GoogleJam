@@ -46,13 +46,13 @@ public class SenateEvac {
         }
         
         Comparator<Party> cmp = (p1,p2)->p2.n-p1.n;
-        while (total>0) {
+        while (total-->0) {
             Collections.sort(senate, cmp);
             // take one from the top
             StringBuilder sb = new StringBuilder();
             sb.append(senate.get(0).a);
             senate.get(0).decreemnt();
-            if ( --total>0 ) {
+            if ( total ==1 || total>2 ) {  // 2 is special case
                 Collections.sort(senate, cmp);
                 sb.append(senate.get(0).a);
                 senate.get(0).decreemnt();
@@ -68,9 +68,8 @@ public class SenateEvac {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1b\\closematch-l.in.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1b\\closematch-t.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1c\\senateevac-l.in.txt");
         
         int TC = sc.nextInt(); // 1 to 50
         for (int i=0; i<TC; i++) {
