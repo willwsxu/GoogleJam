@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package CodeJam2015;
+package CodeJam2015.round1a;
 
 import static java.lang.System.out;
 import java.util.Scanner;

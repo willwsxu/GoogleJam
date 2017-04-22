@@ -1,5 +1,5 @@
 
-package googlejam;
+package CodeJam2016.qualification;
 
 import static java.lang.System.out;
 import java.util.ArrayList;
