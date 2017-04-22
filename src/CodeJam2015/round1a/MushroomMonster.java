@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package CodeJam2015;
 
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;

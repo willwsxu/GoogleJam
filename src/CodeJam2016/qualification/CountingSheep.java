@@ -1,5 +1,5 @@
 //https://code.google.com/codejam/contest/6254486/dashboard
-package googlejam;
+package CodeJam2016.qualification;
 
 import static java.lang.System.out;
 import java.util.Scanner;
