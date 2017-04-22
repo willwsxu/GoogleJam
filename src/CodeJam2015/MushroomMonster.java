@@ -22,6 +22,12 @@ public class MushroomMonster {
         }
         out.print(total);
     }
+    // eat at constant rate
+    // find the most decrease, that determine the rate
+    void greedy2(int[] plates)
+    {
+    
+    }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
