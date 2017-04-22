@@ -5,35 +5,41 @@
  */
 package CodeJam2015.round1a;
 
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.Scanner;
 
 public class MushroomMonster {
     
     // eat only when number is down
-    void greedy1(int[] plates)
+    long greedy1(int[] plates)
     {
         long total=0;
-        int last=plates[0];
         for (int i=1; i<plates.length; i++) {
-            if (plates[i]<last)
-                total += last-plates[i];
-            last = plates[i];
+            if (plates[i]<plates[i-1])
+                total += plates[i-1]-plates[i];
         }
-        out.print(total);
+        return total;
     }
     // eat at constant rate
     // find the most decrease, that determine the rate
-    void greedy2(int[] plates)
+    long greedy2(int[] plates)
     {
-    
+        int maxrate = 0;  // rate per 10 sec, not 1 sec
+        for (int i=1; i<plates.length; i++) 
+            maxrate = max(maxrate, plates[i-1]-plates[i]);
+        long total=0;      
+        for (int i=0; i<plates.length-1; i++) 
+            total += min(maxrate, plates[i]);
+        return total;
     }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1c\\senateevac-l.in.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("jam2015tests\\round1a\\A-large-practice.in.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
@@ -44,8 +50,7 @@ public class MushroomMonster {
             }
             MushroomMonster m = new MushroomMonster();
             out.print("Case #"+(i+1)+": ");
-            m.greedy1(plates);
-            out.println();
+            out.println(m.greedy1(plates)+" "+m.greedy2(plates));
         }
     }
 }
