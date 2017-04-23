@@ -28,14 +28,15 @@ public class FashionShow {
     {
         char save = grid[r][c];
         grid[r][c]=m;
-        boolean ret = isValid_(r, c, m);
+        boolean ret = isValid_(r, c, grid);
         grid[r][c]=save;
         return ret;
     }
-    boolean isValid_(int r, int c, char m)
+    static boolean isValid_(int r, int c, char[][]grid)
     {
         int x=0, p=0, o=0;
         int x2=0, p2=0,o2=0;
+        int N = grid.length;
         for (int i=0; i< N; i++) {
             switch (grid[r][i]) {
                 case '+': p++; break;
@@ -131,7 +132,7 @@ public class FashionShow {
         out.println(isValid(1,2,'+'));
         out.println(isValid(0,2,'+'));
     }
-    long compute(char[][]grid)
+    static long compute(char[][]grid)
     {
         long points=0;
         for (char[] r: grid)
@@ -215,20 +216,36 @@ public class FashionShow {
             for(int j=0; j<source.length; j++)
                 dest[i][j]=source[i][j];
     }
-    void solveRookBishop()
+    static void combine(Rook rk, Bishop bp)
     {
-        Rook rk = new Rook(grid);
-        Bishop bp = new Bishop(grid);
-        bp.greedy();
-        for (int i=0; i<N;i++) {
+        for (int i=0; i<rk.N; i++) {
             int c= rk.board[i];
             if (bp.board[i][c]=='.')
                 bp.board[i][c]='x';
             else if (bp.board[i][c]=='+')
                 bp.board[i][c]='o';
-        }
+        }        
+    }
+    void solveRookBishop()
+    {
+        Rook rk = new Rook(grid);
+        Bishop bp = new Bishop(grid);
+        bp.greedy();
+        combine(rk, bp);
         gridMax=bp.board;
         maxPoints = compute(gridMax);        
+    }
+    static void test()
+    {
+        char[][]grid = new char[100][100];
+        for (char[] row: grid)
+            Arrays.fill(row, '.');
+        Rook rk = new Rook(grid);
+        Bishop bp = new Bishop(grid);
+        bp.greedy();
+        combine(rk, bp);
+        print(bp.board);
+       out.println(compute(bp.board));
     }
     FashionShow(int N, int M)
     {
@@ -258,6 +275,8 @@ public class FashionShow {
         for (int i=0; i<N; i++)
             for(int j=0; j<N; j++)
             {
+                if (!isValid_(i, j, gridMax))
+                    out.println("invalid place "+i+","+j);
                 if (gridOri[i][j] !=gridMax[i][j]) {
                     add.add(gridMax[i][j]+" "+(i+1)+" "+(j+1));
                 }
@@ -272,6 +291,7 @@ public class FashionShow {
     public static void main(String[] args)
     {        
         googlejam.ContestHelper.redirect("out.txt");
+        //test();
         scan = googlejam.ContestHelper.getFileScanner("fashionshow-l.in.txt");
         //scan = googlejam.ContestHelper.getFileScanner("fashionshow-t1.txt");
         
@@ -498,12 +518,11 @@ class Bishop
     
     static void test()
     {
-        Bishop b = new Bishop(new char[8][8]);
+        Bishop b = new Bishop(new char[50][50]);
         b.greedy();
         FashionShow.print(b.board);
-        b = new Bishop(new char[8][8]);
+        b = new Bishop(new char[50][50]);
         b.recurse(0);
-        FashionShow.print(b.board);
         FashionShow.print(b.save);
     }
 }
