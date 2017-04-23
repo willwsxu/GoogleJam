@@ -1,6 +1,11 @@
+package CodeJam2017.round1b;
+
 
 import static java.lang.System.out;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -136,16 +141,24 @@ public class StableNeighbors {
     {
         char color;
         int  num;
-        PQItem(char c, int n)
+        public PQItem(char c, int n)
         {
             color=c; num=n;
+        }
+        @Override
+        public String toString()
+        {
+            return color+":"+num;
         }
     }
     String repeat(String x, int r) {
         StringBuilder sb=new StringBuilder();
-        while (r-->0)
-            sb.append(x);
+        repeat(sb, x, r);
         return sb.toString();
+    }
+    void repeat(StringBuilder sb, String color, int r) {
+        while (r-->0)
+            sb.append(color);        
     }
     String getOGV()
     {
@@ -177,6 +190,42 @@ public class StableNeighbors {
         }
         return sb;
     }
+    StringBuilder getRYB(List<PQItem> ryb)
+    {
+        StringBuilder sb = new StringBuilder();
+        if (ryb.size()==2) {
+            if (ryb.get(0).num !=ryb.get(1).num)
+                out.println("2 color expect equal "+ryb.get(0).color+"="+ryb.get(0).num+","+ryb.get(1).color+"="+ryb.get(1).num);
+            repeat(sb, ""+ryb.get(0).color+ryb.get(1).color, ryb.get(0).num);
+            return sb;
+        }
+        int r = ryb.get(1).num-ryb.get(2).num; // 132 106 85
+        if (r>0) {
+            repeat(sb, ""+ryb.get(0).color+ryb.get(1).color, r);
+            ryb.get(0).num -= r;
+            ryb.get(1).num -= r;
+        }
+        while (ryb.get(0).num>ryb.get(1).num) { // 111 85 85
+            int diff =ryb.get(0).num - ryb.get(1).num;
+            if ( diff == ryb.get(1).num) 
+                break;
+            repeat(sb, ""+ryb.get(0).color+ryb.get(1).color, 1);
+            repeat(sb, ""+ryb.get(0).color+ryb.get(2).color, 1);   
+            ryb.get(0).num -= 2;
+            ryb.get(1).num--;
+            ryb.get(2).num--;
+        }
+        //out.println(ryb);
+        if ( ryb.get(0).num == ryb.get(1).num) {
+            repeat(sb, ""+ryb.get(0).color+ryb.get(1).color+ryb.get(2).color, ryb.get(0).num);
+        }
+        else if (ryb.get(0).num == 2*ryb.get(1).num) {
+            repeat(sb, ""+ryb.get(0).color+ryb.get(1).color, ryb.get(1).num);
+            repeat(sb, ""+ryb.get(0).color+ryb.get(2).color, ryb.get(1).num);        
+        } else
+            out.println("error");
+        return sb;
+    }
     
     void insert(StringBuilder sb, char color, char color2, int repeat) 
     {
@@ -194,12 +243,14 @@ public class StableNeighbors {
         if (unicorns[0]+unicorns[2]+unicorns[4]==0) // no extra RBY
             return getOGV();
         Comparator<PQItem> cmp = (p1,p2)->p2.num-p1.num;
-        PriorityQueue<PQItem> pq = new PriorityQueue<>(100, cmp);
+        List<PQItem> ryb = new ArrayList<>();
         for (int i=0; i<6; i+=2) {
             if (unicorns[i]>0)
-                pq.add(new PQItem(color[i], unicorns[i]));
+                ryb.add(new PQItem(color[i], unicorns[i]));
         }
-        StringBuilder sb = getRYB(pq);
+        Collections.sort(ryb, cmp);
+        //out.println(ryb);
+        StringBuilder sb = getRYB(ryb);
         for (int i=1; i<6; i+=2) {
             if (unicorns[i]>0) {
                 int neb = adj[i][0];  // neighbor
@@ -208,7 +259,8 @@ public class StableNeighbors {
         }
         if (sb.length()!=N)
             out.println("bad length "+sb.length()+" expect "+N);
-        validate(sb.toString());
+        else
+            validate(sb.toString());
         return sb.toString();
     }
     
@@ -216,7 +268,7 @@ public class StableNeighbors {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("B-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("jam2017tests\\round1b\\B-large-practice.in.txt");
         //sc = googlejam.ContestHelper.getFileScanner("unicorns-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
