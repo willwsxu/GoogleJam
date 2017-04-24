@@ -12,7 +12,8 @@ import java.util.Scanner;
 
 public class MushroomMonster {
     
-    // eat only when number is down
+    // eat any number at any time
+    // greedy way is to eat only when number is down to be minimal
     long greedy1(int[] plates)
     {
         long total=0;
@@ -24,12 +25,13 @@ public class MushroomMonster {
     }
     // eat at constant rate
     // find the most decrease, that determine the rate
+    // don't eat more than what is at the starting plate
     long greedy2(int[] plates)
     {
-        int maxrate = 0;  // rate per 10 sec, not 1 sec
+        int maxrate = 0;  // rate per 10 sec, don't calculate rate per sec
         for (int i=1; i<plates.length; i++) 
             maxrate = max(maxrate, plates[i-1]-plates[i]);
-        long total=0;      
+        long total=0;
         for (int i=0; i<plates.length-1; i++) 
             total += min(maxrate, plates[i]);
         return total;
