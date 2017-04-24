@@ -24,6 +24,8 @@ import java.util.Scanner;
  * after pairing OB. If B==O, then there should be no other colors.
  * One scheme is to simplify task 2 to exclude primary-secondary pairs first and arrange like subtask 1.
  * then insert the pairs back
+ * todo
+ * solve with dp later
  */
 
 public class StableNeighbors {
