@@ -10,9 +10,20 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Brief Description: Arrange N unicorns in a circular stalls, neighbors have no color in common
+ * primary color Red, Blue, Yellow
+ * secondary color: Orange=R+Y, Green=B+Y, Violet=R+B
+ * SubTask 1 only primay color. each color should be <= N/2
+ *  start with color of the most, arrange as 1, 4, 7, ..K
+ *  add second color to fill from 2, 5, 8, .. K+1
+ *  if color 2 is < K, fill the remainging with color 3, then go around to fill 3, 6,9 etc.
+ * A more complicated scheme: A B C in descending order, fill AB first until A' B' C (B'==C)
+ *  then fill ABAC unti A' B' C' all same, then fill as ABC
+ * SubTask 2: Primary and secondary color. observe secondary can only have one neighbor
+ *  e.g BOB, so we can chain all seconday together,it should have at least extra primary color left
+ * after pairing OB. If B==O, then there should be no other colors.
+ * One scheme is to simplify task 2 to exclude primary-secondary pairs first and arrange like subtask 1.
+ * then insert the pairs back
  */
 
 public class StableNeighbors {
@@ -162,34 +173,15 @@ public class StableNeighbors {
     }
     String getOGV()
     {
-        if (unicorns[1]>0)
-            return repeat("OB", unicorns[1]);
-        if (unicorns[3]>0)
-            return repeat("GR", unicorns[3]);
-        if (unicorns[5]>0)
-            return repeat("VY", unicorns[5]);
-        return "";
-    }
-    StringBuilder getRYB(PriorityQueue<PQItem> pq)
-    {
-        StringBuilder sb = new StringBuilder();
-        while(!pq.isEmpty()) {
-            PQItem pq1 = pq.poll();
-            sb.append(pq1.color);
-            if (pq.isEmpty()) {
-                if (pq1.num !=1)
-                    out.println("pq bad color "+pq1.color+" num "+pq1.num);
-                break;
+        for (int i=1; i<6; i+=2) {
+            if (unicorns[i]>0) {
+                int primary = adj[i][0];  // neighbor
+                return repeat(""+color[i]+color[primary], unicorns[i]);
             }
-            PQItem pq2 = pq.poll();
-            sb.append(pq2.color);
-            if (--pq1.num>0)
-                pq.add(pq1);
-            if (--pq2.num>0)
-                pq.add(pq2);
         }
-        return sb;
+        return "IMPOSSIBLE";
     }
+    
     StringBuilder getRYB(List<PQItem> ryb)
     {
         StringBuilder sb = new StringBuilder();
@@ -227,17 +219,34 @@ public class StableNeighbors {
         return sb;
     }
     
-    void insert(StringBuilder sb, char color, char color2, int repeat) 
+    StringBuilder getRYB2(List<PQItem> ryb)  // much short than getRYB
     {
-        int idx = sb.toString().indexOf(color); // find B
-        while (repeat-->0) {
+        StringBuilder sb = new StringBuilder();
+        int second=ryb.get(1).num;
+        int third = second+ryb.get(2).num-ryb.get(0).num;
+        for (int i=0; i<ryb.get(0).num; i++) {
+            sb.append(ryb.get(0).color);
+            if (second-->0)
+                sb.append(ryb.get(1).color);
+            else
+                sb.append(ryb.get(2).color);
+            if (third-->0)
+                sb.append(ryb.get(2).color);
+        }
+        return sb;
+    }
+    
+    void insert(StringBuilder sb, char color, char color2, int r) 
+    {
+        int idx = sb.toString().indexOf(color); // find primary color B
+        while (r-->0) {
             sb.insert(idx, color2);  // insert OBOB
             sb.insert(idx, color);
         }
     }
     String greedy()
     {
-        if (!validate()) {
+        if (!validate()) { // remove secondary-primary pair
             return "IMPOSSIBLE";
         }
         if (unicorns[0]+unicorns[2]+unicorns[4]==0) // no extra RBY
@@ -268,7 +277,7 @@ public class StableNeighbors {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("jam2017tests\\round1b\\B-large-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1b\\B-large-practice.in.txt");
         //sc = googlejam.ContestHelper.getFileScanner("unicorns-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
