@@ -95,6 +95,7 @@ public class Haircut {
             return N;
         if (B==1)
             return B;
+        long tim = bst(1, 100000*N, N-B);  // pick worst case upper bound, don't use Long.MAX/2
         return findAt(tim, N-B);
     }
     
@@ -102,6 +103,7 @@ public class Haircut {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1a\\B-Large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int B = sc.nextInt();  // 1 ≤ B ≤ 1000
