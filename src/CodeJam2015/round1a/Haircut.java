@@ -38,20 +38,27 @@ public class Haircut {
         this.B=M.length;
         this.N=N;
     }
-    long solve()
+    long solveSmall()
     {
         if ( N<=B )
             return N;
         if (B==1)
             return B;
         long lcm = GCD.lcm(M, M[0], 1); // repeating cycle
-        long barb = countAt(lcm);
+        //out.println(lcm);
+        long barb = countAt(lcm);  // barbers available in a cycle
+        if (barb==0) {  // LCM overflows in large test
+            out.println("bad LCM "+lcm+" B="+B+" N="+N);
+            return 0;
+        }
         long rem = (N-B)%barb;  
         if (rem==0)
             return B;  // the dead last in a cycle
         long tim = bst(1, lcm, rem);
+        //out.println(tim);
         // count how many before this minute
         long before=countAt(tim-1);  // barbs available in previous min
+        //out.println("before "+before);
         if ( before == rem )
             out.println("error at "+tim);
         rem -= before; // barb # at this minute
@@ -65,12 +72,36 @@ public class Haircut {
         out.println("error ");
         return 0;
     }
+    int findAt(long tim, long b)
+    {
+        long before=countAt(tim-1);  // barbs available in previous min
+        //out.println("before "+before);
+        if ( before == b )
+            out.println("error at "+tim);
+        b -= before; // barb # at this minute
+        long avail=0;
+        for (int i=0; i<B; i++) {
+            if (tim%M[i]==0) {
+                if (++avail==b)
+                    return i+1;
+            }
+        }
+        out.println("error ");
+        return 0; 
+    }
+    long solve()
+    {
+        if ( N<=B )
+            return N;
+        if (B==1)
+            return B;
+        return findAt(tim, N-B);
+    }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("jam2015tests\\round1a\\A-large-practice.in.txt");
+        googlejam.ContestHelper.redirect("out.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int B = sc.nextInt();  // 1 ≤ B ≤ 1000
@@ -79,7 +110,7 @@ public class Haircut {
             for (int k=0; k<B; k++)
                 M[k]=sc.nextInt();
             out.print("Case #"+(i+1)+": ");
-            out.println(new Haircut(M, B).solve());
+            out.println(new Haircut(M, N).solve());
         }
     }
 }
