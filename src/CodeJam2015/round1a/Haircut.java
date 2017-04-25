@@ -55,25 +55,12 @@ public class Haircut {
         if (rem==0)
             return B;  // the dead last in a cycle
         long tim = bst(1, lcm, rem);
-        //out.println(tim);
-        // count how many before this minute
-        long before=countAt(tim-1);  // barbs available in previous min
-        //out.println("before "+before);
-        if ( before == rem )
-            out.println("error at "+tim);
-        rem -= before; // barb # at this minute
-        int avail=0;
-        for (int i=0; i<B; i++) {
-            if (tim%M[i]==0) {
-                if (++avail==rem)
-                    return i+1;
-            }
-        }
-        out.println("error ");
-        return 0;
+        return findAt(tim, rem);
     }
+    
     int findAt(long tim, long b)
     {
+        //out.println(tim);
         long before=countAt(tim-1);  // barbs available in previous min
         //out.println("before "+before);
         if ( before == b )
