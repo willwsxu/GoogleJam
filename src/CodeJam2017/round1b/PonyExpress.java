@@ -5,9 +5,10 @@
  */
 package CodeJam2017.round1b;
 
+import googlejam.FloydWarshall;
 import static java.lang.Double.min;
+import static java.lang.Long.min;
 import static java.lang.System.out;
-import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -53,9 +54,9 @@ public class PonyExpress {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1b\\C-small-practice.in.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("unicorns-t.txt");
+        //googlejam.ContestHelper.redirect("out.txt");
+        //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1b\\C-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("ponyexpress-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) { // 2 <= N≤ 100
@@ -69,10 +70,16 @@ public class PonyExpress {
                 for (int k=0; k<N; k++)
                     D[j][k] = sc.nextLong();
             }
-            int u = sc.nextInt();
-            int v = sc.nextInt();
+            int u[]=new int[Q];
+            int v[]=new int[Q];
+            for (int j=0; j<Q; j++) {
+                u[j] = sc.nextInt();
+                v[j] = sc.nextInt();
+            }
+            FloydWarshallDouble fw = new FloydWarshallDouble(D, N);
+            fw.transform(E, S);
             out.print("Case #"+(i+1)+": ");
-            new PonyExpress(E,S, D).solveSmall();
+            //new PonyExpress(E,S, D).solveSmall();
         }
     }
     static void readES(long E[], int S[], int N)
@@ -81,5 +88,27 @@ public class PonyExpress {
             E[j] = sc.nextLong();
             S[j] = sc.nextInt();
         }
+    }
+}
+
+class FloydWarshallDouble extends FloydWarshall
+{
+    FloydWarshallDouble(long d[][], int N)
+    {
+        super(d, N);
+    }
+    public void transform(long E[], int S[])
+    {
+        for (int i=0; i<N; i++) {
+            for (int j=0; j<N; j++) {
+                if (i!=j) {
+                    if (adjMat[i][j]<=E[i])
+                        adjMat[i][j] = (double)adjMat[i][j]/S[i];
+                    else 
+                        adjMat[i][j] = INF;
+                }
+            }
+        }
+        print(false);
     }
 }
