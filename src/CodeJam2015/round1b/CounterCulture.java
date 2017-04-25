@@ -49,6 +49,20 @@ class NumberHelper
 
 public class CounterCulture {
     
+    long count10s[]=new long[20]; // max is 14 0
+    void preCalc(int zeros)
+    {
+        count10s[0]=1;
+        // 11->19, 91->100
+        for (int d=1; d<zeros; d++) {
+            count10s[d] += count10s[d-1];
+        }
+        count10s[1]=10;
+    }
+    CounterCulture(long N)
+    {
+        
+    }
     long recurse(long N)
     {
         if (N==12)
@@ -70,7 +84,7 @@ public class CounterCulture {
         return cnt+1+recurse(N);
     }
     
-    long iterate(long N)
+    long iterate(long N)  //backward
     {
         long cnt=0;
         while (N>12) {
