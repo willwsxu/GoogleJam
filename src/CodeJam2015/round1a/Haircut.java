@@ -5,39 +5,15 @@
  */
 package CodeJam2015.round1a;
 
+import googlejam.GCD;
 import static java.lang.System.out;
 import java.util.Scanner;
 
-class GCD
-{
-    static long gcd(long p, long q)
-    {
-        return q==0?p:gcd(q, p%q);
-    }
-    static long lcm(long p, long q) {
-        return p*(q/gcd(p,q));   // divide first to avoid overflow
-    }
-    static long lcm(long a[], long seed, int s) {
-        if (s==a.length-1)
-            return lcm(seed, a[s]);
-        else if (s<a.length-1) {
-            return lcm(a, lcm(seed,a[s]), s+1);
-        }
-        else
-            return seed;
-    }
-    static void test()
-    {
-        out.println(gcd(12,8));
-        out.println(lcm(120000000000L,80000000000L));
-        out.println(lcm(new long[]{12,8,3,5,9,1}, 12, 1));
-    }
-}
 public class Haircut {
     long M[];
     int B;
     long N;
-    long countAt(long m) {
+    long countAt(long m) {  // count barbers available at a particular minute
         if (m<=0)
             return 0;
         long barb=0;
@@ -46,6 +22,7 @@ public class Haircut {
         return barb;
     }
     
+    // binary search to find the minute with this many available barbers
     long bst(long lo, long hi, long count) {
         if (lo>=hi)
             return lo;
@@ -74,10 +51,18 @@ public class Haircut {
             return B;  // the dead last in a cycle
         long tim = bst(1, lcm, rem);
         // count how many before this minute
-        long before=0;
+        long before=countAt(tim-1);  // barbs available in previous min
+        if ( before == rem )
+            out.println("error at "+tim);
+        rem -= before; // barb # at this minute
+        int avail=0;
         for (int i=0; i<B; i++) {
-            
+            if (tim%M[i]==0) {
+                if (++avail==rem)
+                    return i+1;
+            }
         }
+        out.println("error ");
         return 0;
     }
     
@@ -86,7 +71,6 @@ public class Haircut {
     {
         //googlejam.ContestHelper.redirect("out.txt");
         //sc = googlejam.ContestHelper.getFileScanner("jam2015tests\\round1a\\A-large-practice.in.txt");
-        GCD.test();
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int B = sc.nextInt();  // 1 ≤ B ≤ 1000
@@ -94,6 +78,8 @@ public class Haircut {
             long M[] = new long[B]; //1 ≤ Mk ≤ 100000
             for (int k=0; k<B; k++)
                 M[k]=sc.nextInt();
+            out.print("Case #"+(i+1)+": ");
+            out.println(new Haircut(M, B).solve());
         }
     }
 }
