@@ -47,16 +47,20 @@ public class PonyExpress {
     }
     void solveSmall()
     {
-        out.println(String.format("%.9f", dp(0)));
+        print(dp(0));
         //out.println(Arrays.toString(f));
     }
     
+    static void print(double d)
+    {
+        out.print(String.format("%.09f", d));        
+    }
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1b\\C-small-practice.in.txt");
-        sc = googlejam.ContestHelper.getFileScanner("ponyexpress-t.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1b\\C-large-practice.in.txt");
+        //sc = googlejam.ContestHelper.getFileScanner("ponyexpress-t.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) { // 2 <= N≤ 100
@@ -70,16 +74,18 @@ public class PonyExpress {
                 for (int k=0; k<N; k++)
                     D[j][k] = sc.nextLong();
             }
-            int u[]=new int[Q];
-            int v[]=new int[Q];
-            for (int j=0; j<Q; j++) {
-                u[j] = sc.nextInt();
-                v[j] = sc.nextInt();
-            }
-            FloydWarshallDouble fw = new FloydWarshallDouble(D, N);
+            FloydWarshallTime fw = new FloydWarshallTime(D, N);
             fw.transform(E, S);
             out.print("Case #"+(i+1)+": ");
+            for (int j=0; j<Q; j++) {
+                int u = sc.nextInt();
+                int v = sc.nextInt();
+                print(fw.sp(u-1, v-1));
+                if (j<Q-1)
+                    out.print(" ");
+            }
             //new PonyExpress(E,S, D).solveSmall();
+            out.println();
         }
     }
     static void readES(long E[], int S[], int N)
@@ -91,9 +97,9 @@ public class PonyExpress {
     }
 }
 
-class FloydWarshallDouble extends FloydWarshall
+class FloydWarshallTime extends FloydWarshall
 {
-    FloydWarshallDouble(long d[][], int N)
+    FloydWarshallTime(long d[][], int N)
     {
         super(d, N);
     }
@@ -109,6 +115,8 @@ class FloydWarshallDouble extends FloydWarshall
                 }
             }
         }
-        print(false);
+        //print(false);
+        dp();
+        //print(false);        
     }
 }

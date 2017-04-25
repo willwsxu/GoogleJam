@@ -28,11 +28,11 @@ public class FloydWarshall {
                 }
             }
         }
-        print(true);
+        //print(true);
         dp();
-        print(true);
+        //print(true);
     }
-    void dp()
+    protected void dp()
     {
         for (int k=0; k<N; k++) {
             for (int i=0; i<N; i++) {
@@ -42,7 +42,7 @@ public class FloydWarshall {
             }
         }
     }
-    public void print(boolean isLong)
+    protected void print(boolean isLong)
     {        
         for (int i=0; i<N; i++) {
             for (int j=0; j<N; j++) {
@@ -53,5 +53,13 @@ public class FloydWarshall {
             }
             out.println();
         }
+    }
+    
+    public double sp(int u, int v)
+    {
+        if (u<N && v<N && u>=0 && v>=0)
+            return adjMat[u][v];
+        out.println("sp bad vertex "+u+","+v);
+        return 0;
     }
 }
