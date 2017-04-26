@@ -59,7 +59,7 @@ public class CounterCulture {
         }
         count10s[1]=10;
     }
-    CounterCulture(long N)
+    CounterCulture()
     {
         
     }
@@ -134,7 +134,7 @@ public class CounterCulture {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        new CounterCulture().test();
+        //new CounterCulture().test();
         //googlejam.ContestHelper.redirect("out.txt");
         //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\A-Large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
