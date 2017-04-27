@@ -33,7 +33,10 @@ public class TypewriterMonkey {
             out.println("0.0");
             return;
         }
-        out.println(String.format("%.7f", bestcase()-avgcase()));
+        int best = bestcase();
+        double avg = avgcase();
+        //out.println(best+" v "+avg);
+        out.println(String.format("%.7f", best-avg));
     }
     boolean contain()
     {
@@ -43,6 +46,7 @@ public class TypewriterMonkey {
         }
         return true;
     }
+    // len of none overlap
     int overlap(String a)  // find overlap substring and must match to end of string
     {
         outter:
@@ -52,7 +56,7 @@ public class TypewriterMonkey {
                     continue outter;
             return i;
         }
-        return -1;
+        return L;
     }
     
     int bestcase()
@@ -62,14 +66,12 @@ public class TypewriterMonkey {
         if (tset.size()==1)
             return S-L+1;
         int ovl = overlap(target);
-        if (ovl<0)
-            return S/L;
-        else if (ovl==0) {
+        if (ovl==0) {
             out.println("overlap error");
             return 0;
         }
         else {
-            return 1+(S-ovl)/(L-ovl);
+            return 1+(S-L)/ovl; // bug fix, ovl is string required to repeat
         }
     }
     double avgcase()
@@ -84,12 +86,17 @@ public class TypewriterMonkey {
             out.println("error p");
         return p*(S-L+1); //Linearity of expectation 
     }
+    static void test()
+    {
+        new TypewriterMonkey("AABCD", "ABA", 100);
+        new TypewriterMonkey("AABCD", "ABC", 100);
+    }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1c\\B-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1c\\B-large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int K = sc.nextInt();  // 1 ≤ K ≤ 100
