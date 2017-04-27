@@ -33,7 +33,7 @@ public class TypewriterMonkey {
             out.println("0.0");
             return;
         }
-        solve();
+        out.println(String.format("%.7f", bestcase()-avgcase()));
     }
     boolean contain()
     {
@@ -82,18 +82,14 @@ public class TypewriterMonkey {
         }
         if (p==0.0)
             out.println("error p");
-        return p;
-    }
-    
-    void solve() {
-        out.println(bestcase()-avgcase());
+        return p*(S-L+1); //Linearity of expectation 
     }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1c\\A-large-practice.in.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1c\\B-small-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int K = sc.nextInt();  // 1 ≤ K ≤ 100
