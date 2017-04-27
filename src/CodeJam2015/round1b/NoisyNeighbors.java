@@ -21,7 +21,8 @@ package CodeJam2015.round1b;
 
 import static java.lang.Integer.min;
 import static java.lang.System.out;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 class Room{
@@ -38,19 +39,19 @@ class Room{
 }
 public class NoisyNeighbors {
     
-    static int score(Room[] rooms, int tenant)
+    static int score(List<Room> rooms, int tenant)
     {
         //out.println(Arrays.toString(rooms)+tenant);
         int s=0;
-        for (int i=0; i<rooms.length; i++) {
-            if (tenant>rooms[i].avail) {
-                s += rooms[i].avail*rooms[i].wall;
-                tenant -= rooms[i].avail;
+        for (int i=0; i<rooms.size(); i++) {
+            if (tenant>rooms.get(i).avail) {
+                s += rooms.get(i).avail*rooms.get(i).wall;
+                tenant -= rooms.get(i).avail;
             }
             else {
-                s += tenant*rooms[i].wall;
+                s += tenant*rooms.get(i).wall;
                 tenant=0;
-                break;
+                break;  // it is done (bug alert)
             }
         }
         if ( tenant>0 )
@@ -61,20 +62,19 @@ public class NoisyNeighbors {
     // occupy  optimally to get maxN to achieve 0 unhappiness
     static int greedy(int R, int C, int t)
     {
+        List<Room> rm = new ArrayList<>();
         int inners=(R-2)*(C-2)/2;
         // oddxodd
-        if (R%2>0 && C%2>0) {
-            Room[] rm = new Room[2]; // 2 types;
+        if (R%2>0 && C%2>0) {// 2 types;
             int sideRoom = R*C/2-inners;
-            rm[0] = new Room(3, sideRoom);
-            rm[1] = new Room(4, inners);   
+            rm.add (new Room(3, sideRoom));
+            rm.add (new Room(4, inners));   
             return score(rm, t);
-        } else {
-            Room[] rm = new Room[3]; // 3 types;
+        } else { // 3 types;
             int sideRoom = R*C/2-inners-2;
-            rm[0] = new Room(2, 2); // corner
-            rm[1] = new Room(3, sideRoom);  
-            rm[2] = new Room(4, inners);    
+            rm.add (new Room(2, 2)); // corner
+            rm.add (new Room(3, sideRoom));  
+            rm.add (new Room(4, inners));    
             return score(rm, t);    
         }
     }
@@ -86,12 +86,12 @@ public class NoisyNeighbors {
     // .X.X.
     static int lessGreedy(int R, int C, int t)
     {
+        List<Room> rm = new ArrayList<>();  // 3 types;
         int inners=(R-2)*(C-2)/2+1;
         int sideRoom = R*C/2+1-inners-4;
-        Room[] rm = new Room[3]; // 3 types;
-        rm[0] = new Room(2, 4); // corner
-        rm[1] = new Room(3, sideRoom);  
-        rm[2] = new Room(4, inners);    
+        rm.add ( new Room(2, 4) ); // corner
+        rm.add ( new Room(3, sideRoom));  
+        rm.add ( new Room(4, inners));    
         return score(rm, t);            
     }
     static int unhappiness(int R, int C, int N)
@@ -110,9 +110,14 @@ public class NoisyNeighbors {
         int total = N-(R*C+1)/2;
         //out.println("tenants "+total);
         if (R==1) {  //X.X., X.X.X
-            Room[] rm = new Room[2]; // 2 types;
-            rm[0] = new Room(1, 1);
-            rm[1] = new Room(2, (C-1)/2);
+            List<Room> rm = new ArrayList<>();
+            if (C%2>0) { //X.X.X  bug alert, two different cases
+                rm.add(new Room(2, C/2));
+            } else {// 2 types;
+                rm.add( new Room(1, 1) );
+                rm.add( new Room(2, C/2-1));
+            
+            }
             return score(rm, total);
         }
         int s1=greedy(R,C,total);
@@ -125,16 +130,39 @@ public class NoisyNeighbors {
     }
     static void test()
     {
-        out.println(unhappiness(2,3,6));      
-        out.println(unhappiness(4,1,2));        
-        out.println(unhappiness(3,3,8));        
+        out.println(unhappiness(1,1,1));    // 0
+        out.println(unhappiness(1,2,1));    // 0 
+        out.println(unhappiness(1,2,2));    // 1 
+        out.println(unhappiness(1,3,2));    // 0
+        out.println(unhappiness(1,3,3));    // 2 
+        out.println(unhappiness(4,1,2));    // 0
+        out.println(unhappiness(4,1,3));    // 1
+        out.println(unhappiness(4,1,4));    // 3
+        
+        out.println(unhappiness(2,2,0));    // 0
+        out.println(unhappiness(2,2,1));    // 0
+        out.println(unhappiness(2,2,2));    // 0
+        out.println(unhappiness(2,2,3));    // 2
+        out.println(unhappiness(2,2,4));    // 4
+        
+        out.println(unhappiness(3,3,4));    // 0
+        out.println(unhappiness(3,3,5));    // 0
+        out.println(unhappiness(3,3,6));    // 3
+        out.println(unhappiness(3,3,7));    // 6
+        out.println(unhappiness(3,3,8));    // 8
+        out.println(unhappiness(3,3,9));    // 12
+        
+        out.println(unhappiness(2,3,3));    // 0
+        out.println(unhappiness(2,3,4));    // 2
+        out.println(unhappiness(2,3,5));    // 4
+        out.println(unhappiness(2,3,6));    // 7  
         out.println(unhappiness(5,2,0));          
     }
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1c\\B-large-practice.in.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\B-small-practice.in.txt");
         
         int TC = sc.nextInt(); // 1 to 1000
         for (int i=0; i<TC; i++) {
