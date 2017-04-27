@@ -1,12 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Brief Description: Count from 1 to N, by adding 1 or flip the digits
+ * output: minimal number to count
+ * Observation:
+ * flip once from one scale to next, e.g. from 11 to 100
+ * 11,12,21,22,23,32,33,34,...,87,88,89,98,99,100 total 26
+ * 11..19,91..100 total 20
+ * Once at the scale, separate number into left and right half
  */
 package CodeJam2015.round1b;
 
 import static CodeJam2015.round1b.NumberHelper.highDigit;
 import static java.lang.System.out;
+import java.util.Arrays;
 import java.util.Scanner;
 
 class NumberHelper
@@ -37,7 +42,14 @@ class NumberHelper
             N /=10;
         }
         return rev;
-    }    
+    }  
+    static long pow(int base, int exp)
+    {
+        long p=1;
+        while (exp-->0)
+            p *= base;
+        return p;
+    }
     
     static void test()
     {
@@ -49,19 +61,32 @@ class NumberHelper
 
 public class CounterCulture {
     
-    long count10s[]=new long[20]; // max is 14 0
+    long count10s[]=new long[20]; // max is 14 0s
+    long flip(long left, long right, int p) // flip 19 to 91, 199 to 991
+    {
+        return right*NumberHelper.pow(10, p)+left;
+    }
     void preCalc(int zeros)
     {
         count10s[0]=1;
         // 11->19, 91->100
         for (int d=1; d<zeros; d++) {
             count10s[d] += count10s[d-1];
+            long right = NumberHelper.pow(10, (d+1)/2)-1;
+            count10s[d] += right;
+            if (d>1){
+                long f = flip(1, right, d/2);
+                long inc = NumberHelper.pow(10, d)-f+1;
+                count10s[d] += inc+1;
+                if (inc<0)
+                    out.println("error inc "+d);
+            }
         }
-        count10s[1]=10;
+        out.println(Arrays.toString(count10s));
     }
     CounterCulture()
     {
-        
+        preCalc(15);
     }
     long recurse(long N)
     {
@@ -121,27 +146,31 @@ public class CounterCulture {
     void test()
     {
         NumberHelper.test();
+        out.println();
         out.println(count(19));
         out.println(count(23));
         out.println(count(29));
         out.println(count(77));
         out.println(count(100));
+        out.println(count(200));
+        out.println(count(201));
         out.println(count(103));
         out.println(count(87654321098765L));    
-        out.println(count(7777777777L));      
+        out.println(count(7777777777L));  
+        out.println(count(10000000000000L));         
         out.println(count(20000000000000L));                 
     }
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //new CounterCulture().test();
+        new CounterCulture().test();
         //googlejam.ContestHelper.redirect("out.txt");
         //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\A-Large-practice.in.txt");
-        int TC = sc.nextInt(); // 1 to 100
+        /*int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             long N = sc.nextLong();  // 1 ≤ N ≤ 10^14
             out.print("Case #"+(i+1)+": ");
             out.println(new CounterCulture().count(N));
-        }
+        }*/
     }
 }
