@@ -162,7 +162,7 @@ public class NoisyNeighbors {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\B-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\B-large-practice.in.txt");
         
         int TC = sc.nextInt(); // 1 to 1000
         for (int i=0; i<TC; i++) {
