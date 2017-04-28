@@ -37,13 +37,20 @@ public class PlayDragon {
         Hd=hd;  Ad=ad;
         Hk=hk;  Ak=ak;
         B=b;    D=d;
-        long s = solveSmall(Hd, Ad, Hk, Ak);
+        long s = solveSmall(Hd, Ad, Hk, Ak, 0, 0);
         if (s>=INF)
             out.println("IMPOSSIBLE");
-        else
+        else {
+            long s1 = solveSmall(Hd, Ad, Hk, Ak, 0, 1);
+            long maxB=1;
+            while (s1<=s) {
+                s=s1;
+                s1 = solveSmall(Hd, Ad, Hk, Ak, 0, ++maxB);
+            }
             out.println(s);
+        }
     }
-    long solveSmall(long hd, long ad, long hk, long ak)  // 1 to 100
+    long solveSmall(long hd, long ad, long hk, long ak, long b, long maxB)  // 1 to 100
     {
         //out.println(hd+":"+ad+","+hk+":"+ak);
         if (ad>=hk)
@@ -53,29 +60,29 @@ public class PlayDragon {
             if (hd<= ak)
                 return INF;
             else
-                return 1+solveSmall(hd, ad, hk, ak);
+                return 1+solveSmall(hd, ad, hk, ak, b, maxB);
         } else {
             if (2*ad>=hk)
-                return 1+solveSmall(hd-ak, ad, hk-ad, ak); // only requires 1 more moves
-            if (D>0 && ak>0) {
+                return 1+solveSmall(hd-ak, ad, hk-ad, ak, b, maxB); // only requires 1 more moves
+            else if (D>0 && ak>0 && hd<=2*ak) {  // only debuff if necessary
                 ak -= D;
                 if (ak<0)
                     ak=0;
-                return 1+solveSmall(hd-ak, ad, hk, ak); // debuff
+                return 1+solveSmall(hd-ak, ad, hk, ak, b, maxB); // debuff
             }
-            else if (B>0) {
+            else if (B>0 && b<maxB) {
                 ad += B;
-                return 1+solveSmall(hd-ak, ad, hk, ak); // Buff
+                return 1+solveSmall(hd-ak, ad, hk, ak, b+1, maxB); // Buff
             }
             else
-                return 1+solveSmall(hd-ak, ad, hk-ad, ak); // attack first
+                return 1+solveSmall(hd-ak, ad, hk-ad, ak, b, maxB); // attack first
         }
     }
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        //googlejam.ContestHelper.redirect("out.txt");
-        //sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\B-large-practice.in.txt");
+        googlejam.ContestHelper.redirect("out.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1a17\\C-small-practice.in.txt");
         
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
