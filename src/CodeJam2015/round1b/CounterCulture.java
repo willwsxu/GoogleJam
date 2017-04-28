@@ -13,70 +13,13 @@
  */
 package CodeJam2015.round1b;
 
-import static CodeJam2015.round1b.NumberHelper.highDigit;
+import googlejam.NumberHelper;
+import static googlejam.NumberHelper.highDigit;
 import static java.lang.System.out;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-
-class NumberHelper
-{
-    static int highDigit(long N)
-    {
-        long digit = 0;
-        while (N>0) {
-            digit = N%10;
-            N /=10;
-        }
-        return (int)digit;
-    }
-    static long scale(long N)  // 120 scale is 100
-    {
-        long s=1;
-        while (N>0) {
-            N /=10;
-            s *= 10;
-        }
-        return s/10;
-    }
-    static long reverse(long N)
-    {
-        long rev=0;
-        while (N>0) {
-            rev = rev*10+N%10;
-            N /=10;
-        }
-        return rev;
-    }  
-    static void split (long N, long[]half)
-    {
-        String str = Long.toString(N);
-        int h = str.length()/2;         // left len<=right len
-        String left=str.substring(0, h);
-        String right=str.substring(h);
-        half[0]=Long.parseLong(left);
-        half[1]=Long.parseLong(right);
-    }
-    static int digits(long N)
-    {
-        return Long.toString(N).length();
-    }
-    static long pow(int base, int exp)
-    {
-        long p=1;
-        while (exp-->0)
-            p *= base;
-        return p;
-    }
-    
-    static void test()
-    {
-        out.println(highDigit(5432100000000L));
-        out.println(scale(1432100000000L));
-        out.println(reverse(1432100000000L));
-    }
-}
 
 public class CounterCulture {
     
@@ -97,8 +40,9 @@ public class CounterCulture {
             count10s[d] += right;
             if (d>1){
                 long f = flip(1, right, d/2);
+                //out.println("flip "+f);
                 long inc = NumberHelper.pow(10, d)-f+1;
-                count10s[d] += inc+1;
+                count10s[d] += inc;
                 if (inc<0)
                     out.println("error inc "+d);
             }
@@ -110,31 +54,7 @@ public class CounterCulture {
         for (long i=1; i<1000000000000000L; i *=10)
             scales.add(i);
     }
-    CounterCulture()
-    {
-    }
-    
-    long recurse(long N)
-    {
-        if (N==12)
-            return 12;
-        int high = highDigit(N);
-        int low = (int)(N%10);
-        long cnt=0;
-        if ( high==1 ) { // 103
-            long s = NumberHelper.scale(N);
-            cnt = N%s;
-            cnt += 2;
-            N=s-2;
-        } else if (low>high)  //29
-        {
-            cnt = (low-high+1);
-            N -= cnt;
-        }
-        N = NumberHelper.reverse(N);
-        return cnt+1+recurse(N);
-    }
-    
+        
     long splitFlip(long N)
     {
         if (scales.contains(N))
@@ -148,7 +68,7 @@ public class CounterCulture {
         } else {
             long count = NumberHelper.reverse(split[0]);
             long N2 = NumberHelper.reverse(NumberHelper.scale(N)+count);
-            return N-N2+1+count+1;
+            return N-N2+1+count;
         }
     }
     long iterate(long N)  //backward
@@ -202,6 +122,7 @@ public class CounterCulture {
         out.println(count(200));
         out.println(count(201));
         out.println(count(103)); 
+        out.println(count(1101)); 
         out.println(count(1234));    
         out.println(count(7777777777L));      
         out.println(count(87654321098765L));     
@@ -211,6 +132,7 @@ public class CounterCulture {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
+        //new CounterCulture().test();
         googlejam.ContestHelper.redirect("out.txt");
         sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\round1b\\A-Large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
