@@ -4,11 +4,11 @@
  * Observation:
  * flip once from one scale to next, e.g. from 11 to 100
  * 11,12,21,22,23,32,33,34,...,87,88,89,98,99,100 total 26
- * 11..19,91..100 total 20
+ * 11..19,91..100 total 19
  * Once at the scale, separate number into left and right half
  *  flip the left number, counting up this much and then flip, then counting to N
  *  e.g. 23456, split into 23 and 456, count to 10032, flip 23001, count to 23456
- *  if right part is all 0, follow above scheme with N-1
+ *  if right part is all 0, follow above scheme with N-1 (except N is 1 followed by all 0s)
  *  if left part is 100, no need to split and flip, just count
  */
 package CodeJam2015.round1b;
@@ -23,11 +23,11 @@ import java.util.Set;
 
 public class CounterCulture {
     
-    static Set<Long> scales = new HashSet<>();
+    static Set<Long> scales = new HashSet<>(); // contain scale values, 1, 10, 100 etc
     static long count10s[]=new long[20]; // max is 14 0s
     
-    static long flip(long left, long right, int p) // flip 19 to 91, 199 to 991
-    {
+    static long flip(long left, long right, int p) 
+    { // flip 19 to 91, 199 to 991, 1099 to 9901
         return right*NumberHelper.pow(10, p)+left;
     }
     static void preCalc(int zeros)
@@ -36,7 +36,7 @@ public class CounterCulture {
         // 11->19, 91->100
         for (int d=1; d<zeros; d++) {
             count10s[d] += count10s[d-1];
-            long right = NumberHelper.pow(10, (d+1)/2)-1;
+            long right = NumberHelper.pow(10, (d+1)/2)-1; // increment right half to all 9
             count10s[d] += right;
             if (d>1){
                 long f = flip(1, right, d/2);
@@ -59,11 +59,10 @@ public class CounterCulture {
     {
         if (scales.contains(N))
             return 0;
-        long[] split=new long[2];
-        NumberHelper.split(N, split);
-        if (split[1]==0)
+        long[] split=NumberHelper.split(N); // 23456->23, 456
+        if (split[1]==0)  // 200->299
             return 1+splitFlip(N-1);
-        else if (scales.contains(split[0])) {
+        else if (scales.contains(split[0])) { //199, just count from 100 
             return N%NumberHelper.scale(N);
         } else {
             long count = NumberHelper.reverse(split[0]);
@@ -71,7 +70,7 @@ public class CounterCulture {
             return N-N2+1+count;
         }
     }
-    long iterate(long N)  //backward
+    long iterate(long N)  // count backward, not optimal
     {
         long cnt=0;
         while (N>12) {
