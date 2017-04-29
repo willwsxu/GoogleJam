@@ -19,7 +19,7 @@ Game Plan:
  if Ad > Hk, attack and kill
  if Hd <= Ak, Cure (or will be dead)
    if Hd-Ak <=Ak, must cure forever unless Debuff will cause Ad>Hk
- Debuff
+ Debuff, Buff, Attack
  */
 package CodeJam2017.round1a;
 
@@ -71,10 +71,10 @@ public class PlayDragon {
     long solveSmall(long hd, long ad, long hk, long ak, long maxB, long maxDB)  // 1 to 100
     {
         //out.println(hd+":"+ad+","+hk+":"+ak);
-        if (ad>=hk)
+        if (ad>=hk)  // kill
             return 1;
         else if ( hd<= ak) {
-            if ( D>0 && hd>ak-1) { // debuff
+            if ( D>0 && hd>ak-D) { // debuff
                 ak -= D;
                 debuffUsed++;
                 return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB);
@@ -110,7 +110,7 @@ public class PlayDragon {
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        test();
+        //test();
         googlejam.ContestHelper.redirect("out.txt");
         sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1a17\\C-small-practice.in.txt");
         

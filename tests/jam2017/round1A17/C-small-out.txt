@@ -19,7 +19,7 @@ Case #18: 157
 Case #19: 21
 Case #20: 159
 Case #21: 38
-Case #22: 40
+Case #22: 39
 Case #23: 16
 Case #24: 53
 Case #25: IMPOSSIBLE
@@ -32,12 +32,12 @@ Case #31: 162
 Case #32: IMPOSSIBLE
 Case #33: 9
 Case #34: 78
-Case #35: IMPOSSIBLE
+Case #35: 19
 Case #36: 78
 Case #37: 14
 Case #38: 170
 Case #39: 169
-Case #40: IMPOSSIBLE
+Case #40: 5
 Case #41: 158
 Case #42: 169
 Case #43: 12
@@ -46,7 +46,7 @@ Case #45: 14
 Case #46: 53
 Case #47: 156
 Case #48: 83
-Case #49: IMPOSSIBLE
+Case #49: 5
 Case #50: 41
 Case #51: 54
 Case #52: 81
@@ -65,7 +65,7 @@ Case #64: 171
 Case #65: 171
 Case #66: 159
 Case #67: 79
-Case #68: IMPOSSIBLE
+Case #68: 4
 Case #69: 168
 Case #70: 82
 Case #71: 53
