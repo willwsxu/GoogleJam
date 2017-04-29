@@ -37,7 +37,7 @@ public class PlayDragon {
         Hd=hd;  Ad=ad;
         Hk=hk;  Ak=ak;
         B=b;    D=d;        
-        long s = solveSmall(Hd, Ad, Hk, Ak, 0, INF);
+        long s = solveSmall(Hd, Ad, Hk, Ak, INF, INF);
         if (s>=INF)
             out.println("IMPOSSIBLE");
         else {
@@ -45,7 +45,7 @@ public class PlayDragon {
             long last=Long.MAX_VALUE;
             for (int i=0; i<maxBufUsed+2; i++) {            
                 buffUsed=0;
-                long s1 = solveSmall(Hd, Ad, Hk, Ak, 0, i);
+                long s1 = solveSmall(Hd, Ad, Hk, Ak, i, INF);
                 //out.print("buf "+i+"-"+s1+",");
                 if ( s1>last)
                     break;
@@ -59,43 +59,50 @@ public class PlayDragon {
         }
     }
     long buffUsed=0;
-    long solveSmall(long hd, long ad, long hk, long ak, long b, long maxB)  // 1 to 100
+    long debuffUsed=0;
+    long solveSmall(long hd, long ad, long hk, long ak, long maxB, long maxDB)  // 1 to 100
     {
         //out.println(hd+":"+ad+","+hk+":"+ak);
         if (ad>=hk)
             return 1;
         else if ( hd<= ak) {
             if ( D>0 && hd>ak-1) { // debuff
-                ak--;
-                return 1+solveSmall(hd-ak, ad, hk, ak, b, maxB);
+                ak -= D;
+                debuffUsed++;
+                return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB);
             } else {
                 hd =Hd-ak; // cure
                 if (hd<= ak)
                     return INF;
                 else
-                    return 1+solveSmall(hd, ad, hk, ak, b, maxB);
+                    return 1+solveSmall(hd, ad, hk, ak, maxB, maxDB);
             }
         } else {
-            if (2*ad>=hk)
-                return 1+solveSmall(hd-ak, ad, hk-ad, ak, b, maxB); // attack, only requires 1 more moves
-            else if (D>0 && ak>0 && hd<=2*ak) {  // only debuff if necessary
+            if (D>0 && ak>0 && debuffUsed<maxDB) {
                 ak -= D;
+                debuffUsed++;
                 if (ak<0)
                     ak=0;
-                return 1+solveSmall(hd-ak, ad, hk, ak, b, maxB); // debuff
+                return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB); // debuff
             }
             else if (B>0 && buffUsed<maxB) {
                 ad += B;
                 buffUsed++;
-                return 1+solveSmall(hd-ak, ad, hk, ak, b+1, maxB); // Buff
+                return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB); // Buff
             }
             else
-                return 1+solveSmall(hd-ak, ad, hk-ad, ak, b, maxB); // attack first
+                return 1+solveSmall(hd-ak, ad, hk-ad, ak, maxB, maxDB); // attack first
         }
+    }
+    static void test()
+    {
+        //new PlayDragon(14, 1, 28, 8, 1, 2);// case #13 small, 14
+        new PlayDragon(91, 1, 46, 45, 0, 2);// case #36 small
     }
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
+        test();
         googlejam.ContestHelper.redirect("out.txt");
         sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1a17\\C-small-practice.in.txt");
         
