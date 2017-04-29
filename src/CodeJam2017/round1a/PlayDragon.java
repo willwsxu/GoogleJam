@@ -36,42 +36,57 @@ public class PlayDragon {
     {
         Hd=hd;  Ad=ad;
         Hk=hk;  Ak=ak;
-        B=b;    D=d;
-        long s = solveSmall(Hd, Ad, Hk, Ak, 0, 0);
+        B=b;    D=d;        
+        long s = solveSmall(Hd, Ad, Hk, Ak, 0, INF);
         if (s>=INF)
             out.println("IMPOSSIBLE");
         else {
-            long s1 = solveSmall(Hd, Ad, Hk, Ak, 0, 1);
-            long maxB=1;
-            while (s1<=s) {
-                s=s1;
-                s1 = solveSmall(Hd, Ad, Hk, Ak, 0, ++maxB);
+            long maxBufUsed=buffUsed;
+            long last=Long.MAX_VALUE;
+            for (int i=0; i<maxBufUsed+2; i++) {            
+                buffUsed=0;
+                long s1 = solveSmall(Hd, Ad, Hk, Ak, 0, i);
+                //out.print("buf "+i+"-"+s1+",");
+                if ( s1>last)
+                    break;
+                last = s1;
             }
+            if (s>last)
+                s = last;
+            else if (last >s && last <INF)
+                out.println("error maxBufUsed"+maxBufUsed+" last "+last);
             out.println(s);
         }
     }
+    long buffUsed=0;
     long solveSmall(long hd, long ad, long hk, long ak, long b, long maxB)  // 1 to 100
     {
         //out.println(hd+":"+ad+","+hk+":"+ak);
         if (ad>=hk)
             return 1;
         else if ( hd<= ak) {
-            hd =Hd-ak; // cure, attacked;
-            if (hd<= ak)
-                return INF;
-            else
-                return 1+solveSmall(hd, ad, hk, ak, b, maxB);
+            if ( D>0 && hd>ak-1) { // debuff
+                ak--;
+                return 1+solveSmall(hd-ak, ad, hk, ak, b, maxB);
+            } else {
+                hd =Hd-ak; // cure
+                if (hd<= ak)
+                    return INF;
+                else
+                    return 1+solveSmall(hd, ad, hk, ak, b, maxB);
+            }
         } else {
             if (2*ad>=hk)
-                return 1+solveSmall(hd-ak, ad, hk-ad, ak, b, maxB); // only requires 1 more moves
+                return 1+solveSmall(hd-ak, ad, hk-ad, ak, b, maxB); // attack, only requires 1 more moves
             else if (D>0 && ak>0 && hd<=2*ak) {  // only debuff if necessary
                 ak -= D;
                 if (ak<0)
                     ak=0;
                 return 1+solveSmall(hd-ak, ad, hk, ak, b, maxB); // debuff
             }
-            else if (B>0 && b<maxB) {
+            else if (B>0 && buffUsed<maxB) {
                 ad += B;
+                buffUsed++;
                 return 1+solveSmall(hd-ak, ad, hk, ak, b+1, maxB); // Buff
             }
             else
@@ -92,6 +107,7 @@ public class PlayDragon {
             long Ak = sc.nextLong();  // 1 ≤ Hd ≤ 10^9
             long B = sc.nextLong();  // 0 ≤ Hd ≤ 10^9
             long D = sc.nextLong();  // 0 ≤ Hd ≤ 10^9
+            out.print("Case #"+(i+1)+": ");
             new PlayDragon(Hd, Ad, Hk, Ak, B, D);
         }
     }
