@@ -77,7 +77,7 @@ public class AlphaCake {
         }
     }
     
-    void bruteforce()
+    void bruteforce()  // incorrect
     {
         used = new boolean[R][C];
         for (int i=0; i<R;i++)
@@ -169,7 +169,7 @@ public class AlphaCake {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        scan = googlejam.ContestHelper.getFileScanner("alphacake-l.in.txt");
+        scan = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1A17\\alphacake-l.in.txt");
         
         int TC = scan.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {

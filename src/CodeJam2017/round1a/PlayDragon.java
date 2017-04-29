@@ -36,21 +36,20 @@ public class PlayDragon {
     {
         Hd=hd;  Ad=ad;
         Hk=hk;  Ak=ak;
-        B=b;    D=d;        
-        long s = solveSmall(Hd, Ad, Hk, Ak, INF, INF);
+        B=b;    D=d;   
+        Param pa = new Param();
+        long s = solveSmall(pa);
         if (s>=INF)
             out.println("IMPOSSIBLE");
         else {
-            long maxBufUsed=buffUsed;
-            long maxDeBufUsed=debuffUsed;
             long minVal=Long.MAX_VALUE;
-            for (long j=0; j<=maxDeBufUsed; j++) 
+            for (long j=0; j<=pa.debuffUsed; j++) 
             {
                 long last=Long.MAX_VALUE;
-                for (int i=0; i<=maxBufUsed; i++) {            
-                    buffUsed=0;
-                    debuffUsed=0;
-                    long s1 = solveSmall(Hd, Ad, Hk, Ak, i, j);
+                for (int i=0; i<=pa.buffUsed; i++) {  
+                    Param p = new Param();
+                    p.maxB=i; p.maxD=j;
+                    long s1 = solveSmall(p);
                     //out.print("buf "+i+"-"+s1+",");
                     if ( s1>last)
                         break;
@@ -62,46 +61,60 @@ public class PlayDragon {
             if (s>minVal)
                 s = minVal;
             else if (minVal >s && minVal <INF)
-                out.println("error maxBufUsed"+maxBufUsed+" last "+minVal+" maxDeBufUsed "+maxDeBufUsed);
+                out.println("error maxBufUsed"+pa.buffUsed+" last "+minVal+" maxDeBufUsed "+pa.debuffUsed);
             out.println(s);
         }
     }
-    long buffUsed=0;
-    long debuffUsed=0;
-    long solveSmall(long hd, long ad, long hk, long ak, long maxB, long maxDB)  // 1 to 100
+    class Param
     {
-        //out.println(hd+":"+ad+","+hk+":"+ak);
-        if (ad>=hk)  // kill
+        long Hd=PlayDragon.this.Hd, Ad=PlayDragon.this.Ad;    //Dragon
+        long Hk=PlayDragon.this.Hk, Ak=PlayDragon.this.Ak;    //Knight
+        long maxB=INF, maxD=INF;      //Buff, Debuff
+        
+        long buffUsed=0;
+        long debuffUsed=0;
+        boolean bCure=false;
+        boolean kill() { return Ad>=Hk;}
+        boolean willDie() { return Hd<=Ak;}
+        boolean mustDebuff() { return Ak>0 && Hd>Ak-D; }
+        boolean bDebuff() { return Ak>0 && debuffUsed<maxD; }
+        void debuff() { Ak -= D; debuffUsed++; if (Ak<0) Ak=0; Hd -= Ak; }
+        void cure() { Hd=PlayDragon.this.Hd-Ak; bCure=true;}
+        boolean bBuff() { return buffUsed<maxB; }
+        void buff() { Ad += B; buffUsed++; Hd -= Ak; }
+        void attack() { Hd -= Ak; Hk -= Ad; }
+    }
+    
+    long solveSmall(Param s)  // result incorrect
+    {
+        boolean bCure=s.bCure;
+        s.bCure=false;
+        if (s.kill())
             return 1;
-        else if ( hd<= ak) {
-            if ( D>0 && hd>ak-D) { // debuff
-                ak -= D;
-                debuffUsed++;
-                return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB);
+        else if ( s.willDie() ) {
+            if ( D>0 && s.mustDebuff() ) {
+                s.debuff();                
+                return 1+solveSmall(s);
             } else {
-                hd =Hd-ak; // cure
-                if (hd<= ak)
+                if (bCure)
                     return INF;
-                else
-                    return 1+solveSmall(hd, ad, hk, ak, maxB, maxDB);
+                else {
+                    s.cure();
+                    return 1+solveSmall(s);
+                }
             }
         } else {
-            if (D>0 && ak>0 && debuffUsed<maxDB) {
-                ak -= D;
-                debuffUsed++;
-                if (ak<0)
-                    ak=0;
-                return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB); // debuff
+            if (D>0 && s.bDebuff()) {
+                s.debuff();
+            } else if (B>0 && s.bBuff()) {
+                s.buff();
+            } else {
+                s.attack();
             }
-            else if (B>0 && buffUsed<maxB) {
-                ad += B;
-                buffUsed++;
-                return 1+solveSmall(hd-ak, ad, hk, ak, maxB, maxDB); // Buff
-            }
-            else
-                return 1+solveSmall(hd-ak, ad, hk-ad, ak, maxB, maxDB); // attack first
-        }
+            return 1+solveSmall(s);
+        }        
     }
+
     static void test()
     {
         //new PlayDragon(14, 1, 28, 8, 1, 2);// case #13 small, 14
