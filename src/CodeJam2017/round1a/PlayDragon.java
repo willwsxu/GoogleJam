@@ -42,19 +42,27 @@ public class PlayDragon {
             out.println("IMPOSSIBLE");
         else {
             long maxBufUsed=buffUsed;
-            long last=Long.MAX_VALUE;
-            for (int i=0; i<maxBufUsed+2; i++) {            
-                buffUsed=0;
-                long s1 = solveSmall(Hd, Ad, Hk, Ak, i, INF);
-                //out.print("buf "+i+"-"+s1+",");
-                if ( s1>last)
-                    break;
-                last = s1;
+            long maxDeBufUsed=debuffUsed;
+            long minVal=Long.MAX_VALUE;
+            for (long j=0; j<=maxDeBufUsed; j++) 
+            {
+                long last=Long.MAX_VALUE;
+                for (int i=0; i<=maxBufUsed; i++) {            
+                    buffUsed=0;
+                    debuffUsed=0;
+                    long s1 = solveSmall(Hd, Ad, Hk, Ak, i, j);
+                    //out.print("buf "+i+"-"+s1+",");
+                    if ( s1>last)
+                        break;
+                    last = s1;
+                }
+                if (minVal > last)
+                    minVal = last;
             }
-            if (s>last)
-                s = last;
-            else if (last >s && last <INF)
-                out.println("error maxBufUsed"+maxBufUsed+" last "+last);
+            if (s>minVal)
+                s = minVal;
+            else if (minVal >s && minVal <INF)
+                out.println("error maxBufUsed"+maxBufUsed+" last "+minVal+" maxDeBufUsed "+maxDeBufUsed);
             out.println(s);
         }
     }
