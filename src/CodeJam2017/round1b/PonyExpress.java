@@ -1,30 +1,38 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Brief Description: There are N cities, each has a horse with speed Si and max travel distance Ei
+ * Rider rides a horse from one city to another, at either city he can switch horses,
+ * or continue with his current as long as its endurance allows
+ * Answer queries: minimal time to deliver mail from citi ui to vi
+ * Algorithm:
+Apply Floyd-Warshall to input G, getting shortest distances between all pairs of nodes.
+Create G' by adding all edges (i, j) such that the distance between i and j in G is less than 
+  or equal to the horse starting at city i's endurance, and set their weights to 
+  that same distance divided by that horse's speed.
+Apply Floyd-Warshall to G' to get minimum times between all pairs of nodes.
+Read queries and answer immediately from the output of the last step.
  */
+// Technique: Dynamic programming, All Pairs Shortest Path
 package CodeJam2017.round1b;
 
 import googlejam.FloydWarshall;
 import static java.lang.Double.min;
-import static java.lang.Long.min;
 import static java.lang.System.out;
 import java.util.Scanner;
 
 
 public class PonyExpress {
     
-    int N;
-    long D[][];
-    int S[];    // speed
+    int N;      // N cities, N horses
+    long D[][]; // Distance matrix between cities
+    int S[];    // horse speed
     long E[];   // horse endurance
-    double f[]; // dynamic programming state, min time from city 1 to N
     PonyExpress(long e[], int[] s, long[][]d)
     {
         E=e;  S=s; D = d;
         N = E.length;
-        f=new double[N];
     }
+    
+    double f[]; // dynamic programming state, min time from city 1 to N
     double dp(int i) {
         if (i==N-1)
             return 0;
@@ -36,7 +44,7 @@ public class PonyExpress {
             if ( D[j-1][j]<=0)
                 continue;
             dist += D[j-1][j];
-            if (dist<=E[i])
+            if (dist<=E[i]) // compare time between using same horse, or switch
                 minT=min(minT, (double)dist/S[i]+dp(j));
             //out.println("i="+i+",j="+",min="+minT);
         }
@@ -46,9 +54,27 @@ public class PonyExpress {
         return minT;
     }
     void solveSmall()
-    {
+    {  // special case: city connect from one to other in single line
+        f=new double[N];
+        int u = sc.nextInt();
+        int v = sc.nextInt();
+        if ( u!=1 || v !=N)
+            out.println("Error small test wrong u and v");
         print(dp(0));
         //out.println(Arrays.toString(f));
+    }
+    void apsp(int Q) // all pairs shortest path
+    {
+        FloydWarshallTime fw = new FloydWarshallTime(D, N);
+        fw.transform(E, S);
+        
+        for (int j=0; j<Q; j++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            print(fw.sp(u-1, v-1));
+            if (j<Q-1)
+                out.print(" ");
+        }
     }
     
     static void print(double d)
@@ -74,17 +100,9 @@ public class PonyExpress {
                 for (int k=0; k<N; k++)
                     D[j][k] = sc.nextLong();
             }
-            FloydWarshallTime fw = new FloydWarshallTime(D, N);
-            fw.transform(E, S);
             out.print("Case #"+(i+1)+": ");
-            for (int j=0; j<Q; j++) {
-                int u = sc.nextInt();
-                int v = sc.nextInt();
-                print(fw.sp(u-1, v-1));
-                if (j<Q-1)
-                    out.print(" ");
-            }
             //new PonyExpress(E,S, D).solveSmall();
+            new PonyExpress(E,S, D).apsp(Q);
             out.println();
         }
     }
