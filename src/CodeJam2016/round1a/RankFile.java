@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 // IDEA: all the numbers has to apprear twice, in row list and column list
+// sort all numbers and keep number with odd occurrence
 public class RankFile {
     
     int[] lists;

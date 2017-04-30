@@ -22,7 +22,7 @@ public class Rd1A16LastWord {
                 if (j==0)
                     build.append(line.charAt(j));
                 else if (line.charAt(j)>=build.charAt(0))
-                    build.insert(0, line.charAt(j));
+                    build.insert(0, line.charAt(j));// insert letter to beginning if it is larger
                 else
                     build.append(line.charAt(j));
             }

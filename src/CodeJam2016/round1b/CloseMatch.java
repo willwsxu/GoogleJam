@@ -3,6 +3,7 @@
  * If there are multiple solutions with the same absolute difference, use the one in 
  * which c is minimized; if there are multiple solutions with the same absolute 
  * difference and the same value of c, use the one in which j is minimized.
+ * Scheme: introduce early difference whenever there is ?, compare the results
  */
 package CodeJam2016.round1b;
 
@@ -376,9 +377,8 @@ public class CloseMatch {
             char jj=J.charAt(i);
             if (cc != '?' && jj != '?') {
                 if (cc!=jj) {  // 1?? 23?
-                    boolean cmp = cc>jj;
-                    fill(C, newC, i, cmp?'0':'9');
-                    fill(J, newJ, i, cmp?'9':'0');
+                    fill(C, newC, i, cc>jj?'0':'9');
+                    fill(J, newJ, i, cc>jj?'9':'0');
                     break;
                 }
                 else { // 91?? 923?
@@ -396,7 +396,7 @@ public class CloseMatch {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1b\\closematch-l.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2016\\round1b\\closematch-l.in.txt");
         //sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1b\\closematch-t.txt");
         
         int TC = sc.nextInt(); // 1 to 200
