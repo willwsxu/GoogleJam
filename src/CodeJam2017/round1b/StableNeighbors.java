@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Scanner;
 
 /*
@@ -83,43 +82,6 @@ public class StableNeighbors {
             }
         }
         return true;
-    }
-    
-    String result=null;
-    void recurse(String res)
-    {
-        if (result !=null)
-            return;
-        if (res.length()==N) {
-            if (neighbor(res.charAt(N-1)-'0', res.charAt(0)-'0'))
-                result=res;
-            return;
-        }
-        int last = res.charAt(res.length()-1)-'0';
-        for (int i=0; i<adj[last].length; i++) {
-            if (unicorns[adj[last][i]]>0) {
-                unicorns[adj[last][i]]--;
-                recurse(res+(char)(adj[last][i]+'0'));
-                unicorns[adj[last][i]]++;
-            }
-        }
-    }
-    void solve()
-    {
-        for (int i=0; i<6; i++)
-            if (unicorns[i]>0) {
-                unicorns[i]--;
-                recurse(""+(char)(i+'0'));
-            }
-        if (result==null)
-            out.println("IMPOSSIBLE");
-        else {
-            for (int i=0; i<N; i++) {
-                char uni = color[result.charAt(i)-'0'];
-                out.print(uni);
-            }
-            out.println();
-        }
     }
     
     // O->B, G->R, V->Y
@@ -225,7 +187,11 @@ public class StableNeighbors {
     {
         StringBuilder sb = new StringBuilder();
         int second=ryb.get(1).num;
-        int third = second+ryb.get(2).num-ryb.get(0).num;
+        int third = 0;
+        if (ryb.size()==3)
+            third = second+ryb.get(2).num-ryb.get(0).num;
+        else if (second != ryb.get(0).num)
+            out.println("Error length should equal");
         for (int i=0; i<ryb.get(0).num; i++) {
             sb.append(ryb.get(0).color);
             if (second-->0)
@@ -261,7 +227,7 @@ public class StableNeighbors {
         }
         Collections.sort(ryb, cmp);
         //out.println(ryb);
-        StringBuilder sb = getRYB(ryb);
+        StringBuilder sb = getRYB2(ryb);
         for (int i=1; i<6; i+=2) {
             if (unicorns[i]>0) {
                 int neb = adj[i][0];  // neighbor
@@ -290,7 +256,6 @@ public class StableNeighbors {
             for (int j=0; j<6; j++)
                 unicorns[j] = sc.nextInt();
             out.print("Case #"+(i+1)+": ");
-            //new StableNeighbors(unicorns, N).solve();
             out.println(new StableNeighbors(unicorns, N).greedy());
         }
     }

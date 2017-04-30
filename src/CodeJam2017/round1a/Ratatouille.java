@@ -101,7 +101,7 @@ public class Ratatouille {
                 }
             }
             kits++;  
-            // move to next packaage
+            // move index to next package
             for (int k=1; k<N; k++) {
                 if (++index[k]==multiples.get(k).size())
                     break outterfor;                
