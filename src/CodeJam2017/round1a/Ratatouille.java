@@ -11,6 +11,7 @@
  * Loop on packages on first ingredient, end when any ingredient run out of packages
  * discard any package whose hi is lower than low
  */
+// Techniques: List of List, stable sort twice by two factors
 package CodeJam2017.round1a;
 
 import static java.lang.System.out;
@@ -53,12 +54,12 @@ public class Ratatouille {
             multiples.add(new ArrayList<>());
             for (int j=0; j<P; j++) {
                 int lodenom=11*R[i]; // multiple value by 10 so no need to use double
-                int hidenom=9*R[i]; 
-                int q = Q[i][j]*10;
+                int hidenom=9*R[i];  // hi=Q/ (R*9/10)=10*Q/(9*R)
+                int q = Q[i][j]*10;  // lo=Q/ (R*11/10)=10*Q/(11*R)
                 int iLow = q/lodenom;
-                if (q%lodenom>0)
+                if (q%lodenom>0)    // ceiling
                     iLow++;
-                int iHi = q/hidenom;
+                int iHi = q/hidenom; // floor
                 if (iLow<=iHi) {
                     multiples.get(i).add(new Multiple(iLow, iHi));
                 }
@@ -91,12 +92,12 @@ public class Ratatouille {
             Multiple first = multiples.get(0).get(j); // compare it rest
             for (int k=1; k<N; k++) {
                 if (first.hi<multiples.get(k).get(index[k]).lo)
-                {
+                {  // discard package from first ingredient
                     continue outterfor;
                 }
                 while (multiples.get(k).get(index[k]).hi<first.lo) {
-                    if (++index[k]==multiples.get(k).size())
-                        break outterfor;
+                    if (++index[k]==multiples.get(k).size()) // discard package from ingredient 1 to N-1
+                        break outterfor;  // no more left
                 }
             }
             kits++;  
