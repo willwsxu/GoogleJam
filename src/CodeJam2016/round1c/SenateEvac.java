@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Brief Description: Senaters from N parties need to be evacuated at most 2 at a time.
+ *  Devise a plan so no one party has majority in the senate
+ * Plan: pick 2 from parties of most senators, use priority queue or sorted list
+ * Be careful when only 2 senators left
  */
 package CodeJam2016.round1c;
 
@@ -103,7 +104,7 @@ public class SenateEvac {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1c\\senateevac-l.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2016\\round1c\\senateevac-l.in.txt");
         
         int TC = sc.nextInt(); // 1 to 50
         for (int i=0; i<TC; i++) {

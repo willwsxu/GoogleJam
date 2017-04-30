@@ -1,7 +1,7 @@
 /*
  * Brief Description: Take slide from building 1 to B in exact M ways
  * Cycle would produce infinite ways so it is not allowed. hence no slides should come from B
- * so it is easier to presume slide direct is from i to j with i<j
+ * so it is easier to presume slide direction is from i to j with i<j
  * if B is 2, only 1 way, 2^0
  * if B is 3, 2 ways, 13, 123, 2^1
  * if B is 4, 4 ways, 14, 124, 1234, 134, 2^2
@@ -10,13 +10,14 @@
  * from i to B, there are 2^(B-1-i) ways
  * this corresponds to bit value, first bit 1 is building B-1, etc
  * e.g if B is 4, M is 3, convert M to binary as b011, 
- *  building 2 and 3 should be fully connected to 4, 24, 234, 34
- *  connect 1 to 2 or 3: 124, 1234, 134
+ *  building 2 and 3 should be fully connected to 24, 234, 34
+ *  connect 1 to 2 and 3: 124, 1234, 134
  * if B is 4, M is 4, M is b100, connect  fully 1 to 4. 
  * if B is 4, M is 5, IMPOSSIBLE
  * output format, BxB grid, each row represent build i, each column is building J
  *  value 1 mean there is a slide from i to j
  */
+// Techniques: Bit use,  subset combinatorics
 package CodeJam2016.round1c;
 
 import static java.lang.System.out;
@@ -79,7 +80,7 @@ public class Slides {
     public static void main(String[] args)  
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("jam2016tests\\round1c\\slides-l.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2016\\round1c\\slides-l.in.txt");
         //test();
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
