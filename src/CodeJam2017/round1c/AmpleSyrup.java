@@ -9,45 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
-
-class Cylinder
-{
-    long r, h;
-    int  id;
-    double face;
-    double side;
-    static int uniqueID=0;
-    Cylinder(int r, int h)
-    {
-        id = ++uniqueID;
-        this.r=r; this.h=h;
-        face=Math.PI*r*r;;
-        side = 2*Math.PI*r*h;
-    }
-    double area()
-    {
-        return face+side;
-    }
-    @Override
-    public boolean equals(Object s)
-    {
-        if (s instanceof Cylinder) {
-            Cylinder other = (Cylinder)s;
-            return r==other.r && h==other.h && id ==other.id;
-        }
-        return false;
-    }
-    @Override
-    public int hashCode()
-    {
-        return (int)(r*h);
-    }
-    @Override
-    public String toString()
-    {
-        return r+":"+h;
-    }
-}
+import googlejam.Cylinder;
 
 public class AmpleSyrup {
     
@@ -56,7 +18,7 @@ public class AmpleSyrup {
     double areaDp[];
     double areaDp2[];
     double INF=-999999999999999L;
-    double dp(int start, int count, boolean bFace)
+    double dp(int start, int count, boolean bFace)  // subproblem is not optimal
     {
         if (count==K)
             return 0; // done
@@ -74,7 +36,7 @@ public class AmpleSyrup {
         } else {
             if (areaDp2[start]>0)
                 return areaDp2[start];
-            area =pancakes.get(start).side+dp(start+1, count+1, false);
+            area =pancakes.get(start).area_side()+dp(start+1, count+1, false);
             area=max(area, dp(start+1, count, false));
             return areaDp2[start]=area;            
         }
@@ -88,15 +50,12 @@ public class AmpleSyrup {
         pancakes = new ArrayList<>();
         for (int i=0; i<N; i++)
             pancakes.add (new Cylinder(R[i], H[i]));
-        
-        double a = greedy();
-        out.println(String.format("%.09f", a));
     }
     
     void print()
     {
         for (int i=0; i<pancakes.size(); i++) {            
-            out.println((long)pancakes.get(i).area()+",side="+(long)+pancakes.get(i).side+",r="+pancakes.get(i).r+",h="+pancakes.get(i).h+";");
+            out.println((long)pancakes.get(i).area()+",side="+(long)+pancakes.get(i).area_side()+",r="+pancakes.get(i).radius()+",h="+pancakes.get(i).height()+";");
         }
         out.println(K);        
     }
@@ -108,9 +67,9 @@ public class AmpleSyrup {
         return dp(0, 0, true);        
     }
     
-    Comparator<Cylinder> cmp_r=(c1,c2)->(int)(c2.r-c1.r);
+    Comparator<Cylinder> cmp_r=(c1,c2)->(int)(c2.radius()-c1.radius());
     Comparator<Cylinder> cmp_side=(c1,c2)->{ 
-        double d=c2.side-c1.side;
+        double d=c2.area_side()-c1.area_side();
         if (d>0)
             return 1;
         else if (d<0)
@@ -149,12 +108,12 @@ public class AmpleSyrup {
             int chosen=1;
             double area=curr.area();
             for (int i=0; i<pancakes.size(); i++) {   
-                if (pancakes.get(i).r>curr.r)
+                if (pancakes.get(i).radius()>curr.radius())
                     pancakes.remove(i);
                 else if (pancakes.get(i).equals(curr))
                     continue;
                 else {
-                    area += pancakes.get(i).side;
+                    area += pancakes.get(i).area_side();
                     if (++chosen==K)
                         break;
                 }
@@ -167,13 +126,14 @@ public class AmpleSyrup {
     
     static void test()
     {
-        new AmpleSyrup(new int[]{3132, 3904, 15050, 3304}, new int[]{391970, 362400, 15, 363402}, 3);
+        double a= new AmpleSyrup(new int[]{3132, 3904, 15050, 3304}, new int[]{391970, 362400, 15, 363402}, 3).solveDp();
+        out.println(String.format("%.09f", a));
     }
     
     static Scanner sc = new Scanner(System.in);  
     public static void main(String[] args)  
     {
-        test();
+        //test();
         googlejam.ContestHelper.redirect("out.txt");
         sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1c\\A-small-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
@@ -187,7 +147,8 @@ public class AmpleSyrup {
                 H[j] = sc.nextInt();
             }
             out.print("Case #"+(i+1)+": ");
-            new AmpleSyrup(R, H, K);
+            double a=new AmpleSyrup(R, H, K).greedy();
+            out.println(String.format("%.09f", a));
         }
     }
 }
