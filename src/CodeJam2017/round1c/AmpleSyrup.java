@@ -19,7 +19,7 @@ public class AmpleSyrup {
     double areaDp2[];
     double INF=-999999999999999L;
     double dp(int start, int count, boolean bFace)  // subproblem is not optimal
-    {
+    { // not suitable for dp
         if (count==K)
             return 0; // done
         else if (start==pancakes.size())
@@ -34,8 +34,8 @@ public class AmpleSyrup {
             area=max(area, dp(start+1, count, true));
             return areaDp[start]=area;
         } else {
-            if (areaDp2[start]>0)
-                return areaDp2[start];
+            //if (areaDp2[start]>0)
+            //    return areaDp2[start];
             area =pancakes.get(start).area_side()+dp(start+1, count+1, false);
             area=max(area, dp(start+1, count, false));
             return areaDp2[start]=area;            
@@ -109,10 +109,9 @@ public class AmpleSyrup {
                 Cylinder next = pancakeQ.peek();
                 if (next.radius()!=curr.radius())
                     break;
+                next = pancakeQ.poll();
                 if (curr.area()<next.area())
-                    curr = pancakeQ.poll();
-                else
-                    next = pancakeQ.poll();
+                    curr = next;
             }
             int chosen=1;
             double area=curr.area();
