@@ -105,6 +105,15 @@ public class AmpleSyrup {
         double ans=0;
         while(!pancakeQ.isEmpty() && pancakes.size()>=K) { //pick largest bottom
             Cylinder curr = pancakeQ.poll();
+            while (!pancakeQ.isEmpty()) {  // find the largest pancake of same radius
+                Cylinder next = pancakeQ.peek();
+                if (next.radius()!=curr.radius())
+                    break;
+                if (curr.area()<next.area())
+                    curr = pancakeQ.poll();
+                else
+                    next = pancakeQ.poll();
+            }
             int chosen=1;
             double area=curr.area();
             for (int i=0; i<pancakes.size(); i++) {   
@@ -135,7 +144,7 @@ public class AmpleSyrup {
     {
         //test();
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1c\\A-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2017\\round1c\\A-large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int N = sc.nextInt();  // 1 ≤ N ≤ 1000
