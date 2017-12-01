@@ -10,9 +10,12 @@ import static java.lang.Integer.min;
 import static java.lang.System.out;
 import java.util.Scanner;
 
+//Given # of mushrooms on plates, find minimal # are eaten
+// Two methods to eat
+// mushrooms can be added to plates
 public class MushroomMonster {
     
-    // eat any number at any time
+    // Method 1: eat any number at any time
     // greedy way is to eat only when number is down to be minimal
     long greedy1(int[] plates)
     {
@@ -23,7 +26,7 @@ public class MushroomMonster {
         }
         return total;
     }
-    // eat at constant rate
+    // method 2: eat at constant rate whenever there are mushrooms on her plate
     // find the most decrease, that determine the rate
     // don't eat more than what is at the starting plate
     long greedy2(int[] plates)
