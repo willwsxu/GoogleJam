@@ -2,7 +2,7 @@
  * Input is digit string show how many people at each shyness level
  * shyness level from 0 to Smax
  * people at each shyness level can range from 0 to 9
- * people only stand if current stading count >= their shyness
+ * people only stand if current standing count >= their shyness
  * Output
  * What is the minimum number of friends that you need to invite to guarantee a standing ovation?
  */
@@ -23,10 +23,10 @@ public class StandingOvation {
             int people = p.charAt(i)-'0';
             if (people==0)
                 continue;
-            if (i>standing) { // need 
+            if (i>standing) { // need to invite some friends to stand
                 invite += (i-standing);
                 //out.println("i="+i+" invite="+invite);
-                standing += (i-standing);
+                standing = i;
             }
             standing += people;
         }
