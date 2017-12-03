@@ -29,18 +29,23 @@ public class InfinitePancake {
     int solve()
     {
         int ans=MAX_PANCAKES;
-        // x is the max number of pancakes after move
+        // x is the max number of pancakes on each plate after move
         for (int x=1; x<MAX_PANCAKES; x++) {
-            // find ceiling of p[i], # of moves to move x cakes to empty plates
+            if (x>ans)
+                break;
+            // move x pancakes to empty plate until each plate has at most x
             int total=0;
             for (int d=0; d<plates.length; d++) {
-                total += ceiling(plates[d], x)-1;
-                if (total+x>ans)  // stop, worse anser
+                // each place moves=ceiling of p[i]/x-1
+                total += (ceiling(plates[d], x)-1);
+                if (total+x>ans)  // stop, worse answer
                     break;
             }
             // total moves + max pancakes is the minimum minutes need to finish eating
-            if (total+x<ans)
+            if (total+x<ans) {
                 ans=total+x;
+                //out.println("max pancakes "+x);
+            }
         }
         return ans;
     }
@@ -48,6 +53,10 @@ public class InfinitePancake {
     {
         out.println(new InfinitePancake(new int[]{30}).solve()==10);
         out.println(new InfinitePancake(new int[]{15, 17}).solve()==10);
+        out.println(new InfinitePancake(new int[]{1}).solve()==1);
+        out.println(new InfinitePancake(new int[]{4}).solve()==3);
+        out.println(new InfinitePancake(new int[]{9}).solve()==5);
+        out.println(new InfinitePancake(new int[]{1000}).solve());
     }
     static Scanner sc = new Scanner(System.in);  
     public static int[] ria(int N) { // read int array
@@ -56,15 +65,19 @@ public class InfinitePancake {
             L[i]=sc.nextInt();
         return L;
     }
-    public static void main(String[] args)  
+    public static void judge()
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\qualification\\B-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\qualification\\B-large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int D = sc.nextInt();  // 1 ≤ D ≤ 1000, # of plates
             int ans=new InfinitePancake(ria(D)).solve();
             out.println("Case #"+(i+1)+": "+ans);
-        }
+        }        
+    }
+    public static void main(String[] args)  
+    {
+        judge();
     }
 }
