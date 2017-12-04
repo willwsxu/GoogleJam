@@ -5,6 +5,11 @@
  * Head server can pick special minute, pick a diner and distribute some of his pancakes to one other
  * no eating during special minute
  * output: smallest # of minutes to complete breakfast
+ * strategy:
+ * move can improve outcome, always can do moves first before eating
+ * need to minimize total moves + max pancakes after all moves
+ * a good strategy is to move x number pancakes to empty plate until all plates has at most x
+ * try all x possible and find the minimum
  */
 package CodeJam2015.qualification;
 
