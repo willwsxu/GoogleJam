@@ -175,7 +175,7 @@ public class Dijkstra
     public static void judge()
     {
         googlejam.ContestHelper.redirect("out.txt");
-        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\qualification\\C-small-practice.in.txt");
+        sc = googlejam.ContestHelper.getFileScanner("tests\\jam2015\\qualification\\C-large-practice.in.txt");
         int TC = sc.nextInt(); // 1 to 100
         for (int i=0; i<TC; i++) {
             int L = sc.nextInt();  // character len, 1 ≤ L ≤ 10000, 1 ≤ L * X ≤ 10^16
