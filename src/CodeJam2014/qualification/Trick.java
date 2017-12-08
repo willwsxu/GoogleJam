@@ -4,6 +4,7 @@
  * cards mixed, volunter say which row his card is in 
  * simulate the magic, find the card or bad mafic or bad volunteer
  */
+// simple strategy: search every item in one from another row
 package CodeJam2014.qualification;
 
 import static java.lang.System.out;
