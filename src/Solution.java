@@ -27,6 +27,32 @@ public class Solution {
         }
     }
         
+    static int[] addCell(List<int[]> cells, int[]topleft, int[]bottomright, int i1, int j1, int A) {        
+        //AI, guess next move
+        if (grid==null) {
+            cells.add(new int[]{i1, j1});
+            if (topleft[0]==0) {  // make it at least 3x3
+                topleft[0]=i1;
+                bottomright[0]=i1+2;
+                topleft[1]=j1;
+                bottomright[1]=j1+2;
+                return new int[]{i1+2, j1+2};
+            } else {
+                if (i1<topleft[0])
+                    topleft[0]=i1;
+                if (j1<topleft[1])
+                    topleft[1]=j1;
+                if (i1>bottomright[0])
+                    bottomright[0]=i1;
+                if (j1>bottomright[1])
+                    bottomright[1]=j1;
+                if (cells.size()<4)
+                    return new int[]{topleft[0]+1, bottomright[1]-1};
+            }
+        } else
+            grid[i1-topleft[0]][j1-topleft[1]]=true;
+        return choose(cells, topleft, bottomright, A);
+    }
     static boolean grid[][]=null;
     static int[] choose(List<int[]> cells, int[]topleft, int[]bottomright, int A)
     {
@@ -37,7 +63,7 @@ public class Solution {
             rows=bottomright[0]-topleft[0]+1;
             int Area=rows*cols;
             if (Area>=A) {
-            //    System.err.println("rectangle "+rows+" "+cols);
+                //System.err.println("rectangle "+rows+" "+cols);
                 grid=new boolean[rows][cols];
                 for (int[] c: cells)
                     grid[c[0]-topleft[0]][c[1]-topleft[1]]=true;
@@ -55,11 +81,24 @@ public class Solution {
         if (grid!=null) {
             i++;
             j++;
+            int r=i-topleft[0];
+            int c=j-topleft[1];
+            int loop=9;
+            while (grid[r-1][c-1] && grid[r-1][c] && grid[r-1][c+1] && grid[r][c-1]
+                     && grid[r][c] && grid[r][c+1] && grid[r+1][c-1] && grid[r+1][c] && grid[r+1][c+1]) {
+                i=topleft[0]+rand.nextInt(rows)+1;
+                j=topleft[1]+rand.nextInt(cols)+1;
+                r=i-topleft[0];
+                c=j-topleft[1];
+                if (loop--==0)
+                    break;
+            }
         }
         return new int[]{i, j};
     }
     static boolean solve(int A)
     {
+        grid=null;
         int topleft[]=new int[]{0,0};
         int bottomright[]=new int[]{0,0};
         int i=500, j=500;
@@ -77,34 +116,9 @@ public class Solution {
                 //print(cells, topleft, bottomright);
                 return true;
             }
-            cells.add(new int[]{i1,j1});
-            
-            //AI, guess next move
-            if (topleft[0]==0) {  // make it at least 3x3
-                topleft[0]=i1;
-                bottomright[0]=i1+2;
-                topleft[1]=j1;
-                bottomright[1]=j1+2;
-                i=i1+2;
-                j=j1+2;
-            } else {
-                if (i1<topleft[0])
-                    topleft[0]=i1;
-                if (j1<topleft[1])
-                    topleft[1]=j1;
-                if (i1>bottomright[0])
-                    bottomright[0]=i1;
-                if (j1>bottomright[1])
-                    bottomright[1]=j1;
-                if (cells.size()<4) {
-                    i=topleft[0]+1;
-                    j=bottomright[1]-1;
-                } else {
-                    int[]rc=choose(cells, topleft, bottomright, A);
-                    i=rc[0];
-                    j=rc[1];
-                }   
-            }
+            int[]rc = addCell(cells, topleft, bottomright, i1, j1, A);
+            i=rc[0];
+            j=rc[1];
         }
         print(cells, topleft, bottomright);
         return false;
