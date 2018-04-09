@@ -14,7 +14,8 @@ import java.util.Scanner;
 public class Gopher {
     static Scanner sc = new Scanner(System.in);  
     static Random rand=new Random();
-    static void print(List<int[]> cells, int[]topleft, int[]bottomright)
+    int moves=0;
+    void print(List<int[]> cells)
     {
         int cols=bottomright[1]-topleft[1]+1;
         int rows=bottomright[0]-topleft[0]+1;
@@ -29,7 +30,8 @@ public class Gopher {
         }
     }
         
-    static int[] addCell(List<int[]> cells, int[]topleft, int[]bottomright, int i1, int j1, int A) {        
+    int[] addCell(List<int[]> cells, int i1, int j1, int A) {  
+        moves++;
         //AI, guess next move
         if (grid==null) {
             cells.add(new int[]{i1, j1});
@@ -53,10 +55,10 @@ public class Gopher {
             }
         } else
             grid[i1-topleft[0]][j1-topleft[1]]=true;
-        return choose(cells, topleft, bottomright, A);
+        return choose(cells, A);
     }
     static boolean grid[][]=null;
-    static int[] choose(List<int[]> cells, int[]topleft, int[]bottomright, int A)
+    int[] choose(List<int[]> cells, int A)
     {
         int cols=0;
         int rows=0;
@@ -98,11 +100,11 @@ public class Gopher {
         }
         return new int[]{i, j};
     }
-    static boolean solve(int A)
+    int topleft[]=new int[]{0,0};
+    int bottomright[]=new int[]{0,0};
+    boolean solve(int A)
     {
         grid=null;
-        int topleft[]=new int[]{0,0};
-        int bottomright[]=new int[]{0,0};
         int i=500, j=500;
         int count=1000;
         List<int[]> cells=new ArrayList<>();
@@ -111,18 +113,18 @@ public class Gopher {
             int i1=sc.nextInt();
             int j1=sc.nextInt();
             if (i1<0 || j1<0) {
-                print(cells, topleft, bottomright);
+                print(cells);
                 return false;
             }
             if (i1==0 && j1==0) {
                 //print(cells, topleft, bottomright);
                 return true;
             }
-            int[]rc = addCell(cells, topleft, bottomright, i1, j1, A);
+            int[]rc = addCell(cells, i1, j1, A);
             i=rc[0];
             j=rc[1];
         }
-        print(cells, topleft, bottomright);
+        print(cells);
         return false;
     }
     
@@ -131,8 +133,9 @@ public class Gopher {
         int T=sc.nextInt();
         //System.err.println("Test "+T);
         while (T-->0) {
-            boolean ret=solve(sc.nextInt());
-            //System.err.println(ret);
+            Gopher go=new Gopher();
+            boolean ret=go.solve(sc.nextInt());
+            System.err.println(ret+" "+go.moves);
         }
     }
 }
