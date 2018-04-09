@@ -57,7 +57,7 @@ public class Gopher {
             grid[i1-topleft[0]][j1-topleft[1]]=true;
         return choose(cells, A);
     }
-    static boolean grid[][]=null;
+    boolean grid[][]=null;
     int[] choose(List<int[]> cells, int A)
     {
         int cols=0;
@@ -100,12 +100,15 @@ public class Gopher {
         }
         return new int[]{i, j};
     }
-    int topleft[]=new int[]{0,0};
+    int topleft[]=new int[]{1,1};
     int bottomright[]=new int[]{0,0};
     boolean solve(int A)
     {
-        grid=null;
-        int i=500, j=500;
+        // A is at most 200, make it 3 by x grid
+        bottomright[0]=3;
+        bottomright[1]=(A+2)/3;        
+        grid=new boolean[3][bottomright[1]];
+        int i=2, j=2;
         int count=1000;
         List<int[]> cells=new ArrayList<>();
         while (count-->0) {
@@ -131,7 +134,6 @@ public class Gopher {
     public static void main(String[] args)  
     {
         int T=sc.nextInt();
-        //System.err.println("Test "+T);
         while (T-->0) {
             Gopher go=new Gopher();
             boolean ret=go.solve(sc.nextInt());
