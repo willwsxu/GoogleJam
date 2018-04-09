@@ -1,3 +1,5 @@
+package codejam2018.qual;
+
 
 import java.io.BufferedReader;
 import java.io.File;

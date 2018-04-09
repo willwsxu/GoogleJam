@@ -1,3 +1,5 @@
+package codejam2018.qual;
+
 
 import java.util.ArrayList;
 import java.util.List;

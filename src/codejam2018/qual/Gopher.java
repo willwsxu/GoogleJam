@@ -1,3 +1,5 @@
+package codejam2018.qual;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +11,7 @@ import java.util.Scanner;
 
  */
 
-public class Solution {
+public class Gopher {
     static Scanner sc = new Scanner(System.in);  
     static Random rand=new Random();
     static void print(List<int[]> cells, int[]topleft, int[]bottomright)
